@@ -19,13 +19,12 @@ $stmt_sale = $pdo->prepare($query_sale);
 
 try {
     $stmt_main_slider->execute();
-    $stmt_sponsors ->execute();
+    $stmt_sponsors->execute();
 
     $stmt_random->execute();
     $stmt_new->execute();
     $stmt_sale->execute();
-}
-catch (\PDOException $e) {
+} catch (\PDOException $e) {
     error_log($e->getMessage());
     http_response_code(500);
     require('errors/500.php');
@@ -42,41 +41,56 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html  lang="ru" dir="ltr">
+<html lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-	<title>Cerama Granit - Главная</title>
-	<link rel="icon" href="/img/fav.png" type="image/x-icon">
+    <title>REVstore - MGRR Merch</title>
+    <link rel="icon" href="/img/fav.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/swiper_lib.css">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/main.css">
-	<link rel="stylesheet" href="/css/catalog.css">
+    <link rel="stylesheet" href="/css/catalog.css">
+    <link rel="stylesheet" href="/css/loader.css">
     <script defer src="/js/scroll.js"></script>
-	<script defer src="/js/swiper_lib.js"></script>
-	<script defer src="/js/swiper.js"></script>
+    <script defer src="/js/swiper_lib.js"></script>
+    <script defer src="/js/swiper.js"></script>
+    <script defer src="/js/loader.js"></script>
 </head>
 <body>
-	<?php include_once __DIR__ .  '/components/header.php' ?>
-	<main class="content">
-		<div class="con">
-			<div class="main_dir">
-				<div class="swiper sw1">
-					<div class="swiper-wrapper">
+    <!-- Лоадер с полоской -->
+    <div class="loader" id="loader">
+        <img src="/img/svg/logo.svg" alt="Logo" class="logo">
+        <div class="loading-container" id="loadingBar">
+            <div class="loading-segment" id="segment1"></div>
+            <div class="loading-segment" id="segment2"></div>
+            <div class="loading-segment" id="segment3"></div>
+            <div class="loading-segment" id="segment4"></div>
+            <div class="loading-segment" id="segment5"></div>
+        </div>
+        <div class="loading-text" id="loadingText">LOADING: 0%</div>
+    </div>
+
+    <?php include_once __DIR__ . '/components/header.php' ?>
+    <main class="content">
+        <div class="con">
+            <div class="main_dir">
+                <div class="swiper sw1">
+                    <div class="swiper-wrapper">
                         <?php foreach ($images_main_slider as $data_main_slider): ?>
-						    <div class="swiper-slide sl1">
+                            <div class="swiper-slide sl1">
                                 <a href="<?php echo $data_main_slider['link']; ?>">
                                     <img src="<?php echo $data_main_slider['image']; ?>">
                                 </a>
                             </div>
                         <?php endforeach; ?>
-					</div>
-					<div class="swiper-pagination pag1"></div>
-				</div>
-			</div>
-			<div class="main_dir">
-				<h1>Случайные предложения</h1>
-				<div class="swiper sw2">
-					<div class="swiper-wrapper">
+                    </div>
+                    <div class="swiper-pagination pag1"></div>
+                </div>
+            </div>
+            <div class="main_dir">
+                <h1>Случайные предложения</h1>
+                <div class="swiper sw2">
+                    <div class="swiper-wrapper">
                         <?php foreach ($products_random as $data_random): ?>
                             <div class="swiper-slide sl2">
                                 <div class="prod">
@@ -91,7 +105,7 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                         <div class="price">
                                             <span><?php echo $data_random['price']; ?></span>
-                                            <span class="price_sign">₽/м²</span>
+                                            <span class="price_sign">₽</span>
                                         </div>
                                     </a>
                                     <div class="btns">
@@ -114,15 +128,15 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         <?php endforeach; ?>
-					</div>
-					<div class="swiper-button-prev prev2"></div>
-					<div class="swiper-button-next next2"></div>
-				</div>
-			</div>
-			<div class="main_dir">
-				<h1>Новинки</h1>
-				<div class="swiper sw2">
-					<div class="swiper-wrapper">
+                    </div>
+                    <div class="swiper-button-prev prev2"></div>
+                    <div class="swiper-button-next next2"></div>
+                </div>
+            </div>
+            <div class="main_dir">
+                <h1>Новинки</h1>
+                <div class="swiper sw2">
+                    <div class="swiper-wrapper">
                         <?php foreach ($products_new as $data_new): ?>
                             <div class="swiper-slide sl2">
                                 <div class="prod">
@@ -137,7 +151,7 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                         <div class="price">
                                             <span><?php echo $data_new['price']; ?></span>
-                                            <span class="price_sign">₽/м²</span>
+                                            <span class="price_sign">₽</span>
                                         </div>
                                     </a>
                                     <div class="btns">
@@ -160,17 +174,17 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         <?php endforeach; ?>
-					</div>
-					<div class="swiper-button-prev prev2"></div>
-					<div class="swiper-button-next next2"></div>
-				</div>
-			</div>
-			<div class="main_dir">
-				<h1>Скидки</h1>
-				<div class="swiper sw2">
-					<div class="swiper-wrapper">
-                    <?php foreach ($products_sale as $data_sale): ?>
-                        <div class="swiper-slide sl2">
+                    </div>
+                    <div class="swiper-button-prev prev2"></div>
+                    <div class="swiper-button-next next2"></div>
+                </div>
+            </div>
+            <div class="main_dir">
+                <h1>Скидки</h1>
+                <div class="swiper sw2">
+                    <div class="swiper-wrapper">
+                        <?php foreach ($products_sale as $data_sale): ?>
+                            <div class="swiper-slide sl2">
                                 <div class="prod">
                                     <?php if (isset($data_sale['sale'])): ?>
                                         <a class="sale">-<?php echo $data_sale['sale']; ?>%</a>
@@ -183,7 +197,7 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                         <div class="price">
                                             <span><?php echo $data_sale['price']; ?></span>
-                                            <span class="price_sign">₽/м²</span>
+                                            <span class="price_sign">₽</span>
                                         </div>
                                     </a>
                                     <div class="btns">
@@ -206,23 +220,23 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                 </div>
                             </div>
                         <?php endforeach; ?>
-					</div>
-					<div class="swiper-button-prev prev2"></div>
-					<div class="swiper-button-next next2"></div>
-				</div>
-			</div>
-			<div class="main_dir">
-				<h1>Наши партнеры</h1>
-				<div class="brands">
+                    </div>
+                    <div class="swiper-button-prev prev2"></div>
+                    <div class="swiper-button-next next2"></div>
+                </div>
+            </div>
+            <div class="main_dir">
+                <h1>Наши партнеры</h1>
+                <div class="brands">
                     <?php foreach ($images_sponsors as $data_sponsors): ?>
-					    <a href="<?php echo $data_sponsors['link']; ?>">
+                        <a href="<?php echo $data_sponsors['link']; ?>">
                             <img src="<?php echo $data_sponsors['image']; ?>">
                         </a>
                     <?php endforeach; ?>
-				</div>
-			</div>
-		</div>
-	</main>
-	<?php include_once __DIR__ .  '/components/footer.php' ?>
+                </div>
+            </div>
+        </div>
+    </main>
+    <?php include_once __DIR__ . '/components/footer.php' ?>
 </body>
 </html>
