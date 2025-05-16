@@ -31,13 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             breakpoints: {
                 320: {
-                    slidesPerView: 1,
+                    slidesPerView: 1.5,
                     spaceBetween: 10,
                     slidesOffsetBefore: 5,
                     slidesOffsetAfter: 5,
                 },
                 480: {
-                    slidesPerView: 1,
+                    slidesPerView: 1.5,
                     spaceBetween: 10,
                     slidesOffsetBefore: 5,
                     slidesOffsetAfter: 5,
