@@ -1,17 +1,25 @@
 /* Основной слайдер */
 .sw1 {
-    min-height: 440px; /* Используем min-height вместо height для гибкости */
+    height: 840px;
     border-radius: 10px;
     background-color: #2C2C2E;
-    transition: min-height 0.3s ease;
+    transition: height 0.3s ease;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
 /* Слайдеры для продуктов */
 .sw2 {
     margin-top: 20px;
-    min-height: 440px; 
+    height: 440px;
     position: relative;
-    transition: min-height 0.3s ease;
+    transition: height 0.3s ease;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    overflow: hidden;
 }
 
 /* Общие стили для слайдов */
@@ -29,6 +37,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
+    transition: border-radius 0.3s;
 }
 
 /* Кнопки навигации для слайдеров */
@@ -48,7 +57,7 @@
     justify-content: center;
     cursor: pointer;
     z-index: 2;
-    transition: background-color 0.3s ease, opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease, height 0.3s ease;
+    transition: background-color 0.3s, opacity 0.3s, visibility 0.3s, width 0.3s, height 0.3s;
 }
 
 .prev2 {
@@ -58,6 +67,7 @@
 .next2 {
     right: 10px;
 }
+
 .sw2:hover .prev2,
 .sw2:hover .next2 {
     visibility: visible;
@@ -66,7 +76,6 @@
 
 .prev2:hover, .next2:hover {
     background-color: #00D4FF;
-    transition: background-color 0.3s ease;
 }
 
 .prev2:active, .next2:active {
@@ -77,12 +86,11 @@
     color: #E0E0E0;
     font-size: 14px;
     font-weight: 1000;
-    transition: color 0.3s ease, font-size 0.3s ease;
+    transition: color 0.3s, font-size 0.3s;
 }
 
 .prev2:hover::after, .next2:hover::after {
     color: #2C2C2E;
-    transition: color 0.3s ease;
 }
 
 /* Блок с партнёрами */
@@ -90,15 +98,261 @@
     margin-top: 40px;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
     flex-wrap: wrap;
     gap: 20px;
-    transition: gap 0.3s ease;
+    transition: gap 0.3s;
 }
 
 .brands img {
-    max-width: 200px; 
+    max-width: 200px;
     width: 100%;
     height: auto;
-    transition: max-width 0.3s ease;
+    transition: max-width 0.3s;
+}
+.prod {
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px 12px 14px 12px;
+    border-radius: 12px;
+    background: #232325;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+h1 {
+    font-size: 2.2rem;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    text-align: left;
+    word-break: break-word;
+}
+
+
+/* Адаптивность */
+
+/* Большие ноутбуки и десктопы (до 1400px) */
+@media (max-width: 1400px) {
+    .sw1 {
+        height: 440px;
+        max-width: 1200px;
+    } 
+    .sw2 {
+        height: 380px;
+        max-width: 900px;
+    }
+    .brands {
+        max-width: 900px;
+    }
+    .brands img {
+        max-width: 160px;
+    }
+}
+
+/* Планшеты (до 1024px) */
+@media (max-width: 1024px) {
+    .sw1 {
+        height: 380px;
+        max-width: 900px;
+    } 
+    .sw2 {
+        height: 340px;
+        max-width: 700px;
+    }
+    .prev2, .next2 {
+        left: 10px;
+        width: 36px;
+        height: 36px;
+    }
+    .next2 {
+        right: 10px;
+    }
+    .brands {
+        gap: 16px;
+        padding: 0 10px;
+    }
+    .brands img {
+        max-width: 120px;
+    }
+    h1 {
+        font-size: 1.7rem;
+        margin-bottom: 14px;
+    }
+    .prod {
+        min-height: 320px;
+        padding: 14px 8px 10px 8px;
+    }
+    .prod .desc {
+        font-size: 0.98rem;
+    }
+    .prod .prod_name {
+        font-size: 1.08rem;
+    }
+    .prod .price {
+        font-size: 1.1rem;
+    }
+    .prod .cart_but, .prod .fav_but {
+        font-size: 0.98rem;
+        padding: 5px 5px;
+    }
+}
+
+/* Малые планшеты (до 768px) */
+@media (max-width: 768px) {
+    .sw1 {
+        height: 380px;
+        max-width: 100vw;
+    }
+     .sw2 {
+        height: 320px;
+        max-width: 98vw;
+    }
+    .prev2, .next2 {
+        width: 30px;
+        height: 30px;
+        left: 5px;
+        visibility: visible;
+        opacity: 1;
+    }
+    .next2 {
+        right: 5px;
+    }
+    .prev2::after, .next2::after {
+        font-size: 12px;
+    }
+    .brands {
+        gap: 10px;
+    }
+    .brands img {
+        max-width: 90px;
+    }
+    h1 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    .prod {
+        min-height: 220px;
+        padding: 8px 4px 8px 4px;
+    }
+    .prod .desc {
+        font-size: 0.93rem;
+    }
+    .prod .prod_name {
+        font-size: 1rem;
+    }
+    .prod .price {
+        font-size: 1rem;
+    }
+    .prod .cart_but {
+        font-size: 0.93rem;
+        padding: 5px 5px;
+    }
+    .prod .fav_but {
+        font-size: 0.93rem;
+        padding: 5px 5px;
+    }
+}
+
+/* Мобильные (до 480px) */
+@media (max-width: 480px) {
+    .sw1 {
+        height: 380px;
+        max-width: 90vw;
+    }
+    .sw2 {
+        height: 320px;
+        max-width: 100vw;
+        border-radius: 6px;
+    }
+    .swiper-slide img {
+        border-radius: 6px;
+    }
+    .prev2, .next2 {
+        width: 24px;
+        height: 24px;
+        left: 2px;
+        visibility: visible;
+        opacity: 1;
+    }
+    .next2 {
+        right: 2px;
+    }
+    .prev2::after, .next2::after {
+        font-size: 10px;
+    }
+    .brands {
+        gap: 6px;
+    }
+    .brands img {
+        max-width: 60px;
+    }
+    h1 {
+        font-size: 1.05rem;
+        margin-bottom: 7px;
+        text-align: center;
+    }
+    .prod {
+        min-height: 150px;
+        padding: 5px 2px 6px 2px;
+    }
+    .prod .desc {
+        font-size: 0.85rem;
+    }
+    .prod .prod_name {
+        font-size: 0.95rem;
+    }
+    .prod .price {
+        font-size: 0.95rem;
+    }
+    .prod .cart_but, .prod .fav_but {
+        font-size: 0.85rem;
+        padding: 4px 2px;
+    }
+}
+
+/* Очень маленькие экраны (до 340px) */
+@media (max-width: 340px) {
+    .sw1 {
+        height: 380px;
+        max-width: 100vw;
+    }
+    .sw2 {
+        height: 320px;
+        border-radius: 4px;
+    }
+    .swiper-slide img {
+        border-radius: 4px;
+    }
+    .prev2, .next2 {
+        width: 18px;
+        height: 18px;
+        left: 1px;
+    }
+    .next2 {
+        right: 1px;
+    }
+    .prev2::after, .next2::after {
+        font-size: 8px;
+    }
+    .brands img {
+        max-width: 40px;
+    }
+     h1 {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    .prod {
+        padding: 3px 1px 3px 1px;
+    }
+    .prod .desc,
+    .prod .prod_name,
+    .prod .price,
+    .prod .cart_but,
+    .prod .fav_but {
+        font-size: 0.78rem;
+    }
 }
