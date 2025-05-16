@@ -55,7 +55,6 @@
 .open_list:hover::before,
 .open_list:hover::after {
     color: #00D4FF;
-    background-color: #00D4FF;
 }
 
 .open_list::before,
@@ -81,8 +80,7 @@
 .open a,
 .open::before,
 .open::after {
-    color: #00D4FF;
-    background-color: #00D4FF;
+    color: #00D4FF;;
 }
 
 .open::before {
