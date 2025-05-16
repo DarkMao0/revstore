@@ -9,7 +9,7 @@
 /* Слайдеры для продуктов */
 .sw2 {
     margin-top: 20px;
-    min-height: 440px; /* Используем min-height вместо height для гибкости */
+    min-height: 440px; 
     position: relative;
     transition: min-height 0.3s ease;
 }
@@ -58,8 +58,6 @@
 .next2 {
     right: 10px;
 }
-
-/* Показываем кнопки при ховере на десктопе */
 .sw2:hover .prev2,
 .sw2:hover .next2 {
     visibility: visible;
@@ -92,119 +90,15 @@
     margin-top: 40px;
     display: flex;
     align-items: center;
-    justify-content: center; /* Заменили space-between на center для равномерного распределения */
+    justify-content: center; 
     flex-wrap: wrap;
     gap: 20px;
     transition: gap 0.3s ease;
 }
 
 .brands img {
-    max-width: 200px; /* Добавили max-width для гибкости */
+    max-width: 200px; 
     width: 100%;
     height: auto;
     transition: max-width 0.3s ease;
-}
-
-/* Адаптивность */
-
-/* Планшеты (≤1024px) */
-@media (width <= 1024px) {
-    .sw1, .sw2 {
-        width: 100%;
-        min-height: 400px;
-    }
-    .prev2, .next2 {
-        left: 15px;
-    }
-    .next2 {
-        right: 15px;
-    }
-    .brands {
-        width: 100%;
-        padding: 0 15px;
-        justify-content: center;
-        gap: 20px;
-    }
-    .brands img {
-        max-width: 180px;
-    }
-}
-
-/* Малые планшеты (≤768px) */
-@media (width <= 768px) {
-    .sw1, .sw2 {
-        min-height: 300px;
-    }
-    .prev2, .next2 {
-        width: 35px;
-        height: 35px;
-        left: 10px;
-        visibility: visible; /* Делаем кнопки видимыми на мобильных */
-        opacity: 1;
-    }
-    .next2 {
-        right: 10px;
-    }
-    .prev2::after, .next2::after {
-        font-size: 12px;
-    }
-    .brands {
-        gap: 20px;
-        justify-content: center;
-    }
-    .brands img {
-        max-width: 150px;
-    }
-}
-
-/* Мобильные (≤480px) */
-@media (width <= 480px) {
-    .sw1, .sw2 {
-        min-height: 200px;
-    }
-    .prev2, .next2 {
-        width: 30px;
-        height: 30px;
-        left: 5px;
-        visibility: visible;
-        opacity: 1;
-    }
-    .next2 {
-        right: 5px;
-    }
-    .prev2::after, .next2::after {
-        font-size: 10px;
-    }
-    .brands {
-        gap: 15px;
-    }
-    .brands img {
-        max-width: 100px;
-    }
-}
-
-/* Очень маленькие экраны (≤320px) */
-@media (width <= 320px) {
-    .sw1, .sw2 {
-        min-height: 150px;
-    }
-    .prev2, .next2 {
-        width: 25px;
-        height: 25px;
-        left: 5px;
-        visibility: visible;
-        opacity: 1;
-    }
-    .next2 {
-        right: 5px;
-    }
-    .prev2::after, .next2::after {
-        font-size: 8px;
-    }
-    .brands {
-        gap: 10px;
-    }
-    .brands img {
-        max-width: 80px;
-    }
 }
