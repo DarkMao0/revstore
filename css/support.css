@@ -1,0 +1,127 @@
+.support_con {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 550px;
+    background-color: #2C2C2E;
+    color: #E0E0E0;
+}
+
+.sup_field {
+    padding: 10px;
+    width: 100%;
+    max-width: 350px;
+    height: 32px;
+    border-radius: 5px;
+    border: 1px solid #A0A0A0;
+    background-color: #2C2C2E;
+    color: #E0E0E0;
+    transition: 0.3s all;
+}
+
+.sup_field:hover {
+    border-color: #00D4FF;
+    transition: 0.3s all;
+}
+
+.sup_field:focus {
+    outline: none;
+    border-color: #00D4FF;
+}
+
+.sup_text {
+    padding: 10px;
+    width: 100%;
+    max-width: 350px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid #A0A0A0;
+    background-color: #2C2C2E;
+    color: #E0E0E0;
+    resize: none;
+    transition: 0.3s all;
+}
+
+.sup_text:hover {
+    border-color: #00D4FF;
+    transition: 0.3s all;
+}
+
+.sup_text:focus {
+    outline: none;
+    border-color: #00D4FF;
+}
+
+.sup_but {
+    cursor: pointer;
+    width: fit-content;
+    padding: 6px 18px;
+    border-radius: 5px;
+    border: none;
+    font-family: os_medium, sans-serif;
+    color: #2C2C2E;
+    background-color: #00D4FF;
+    transition: 0.3s all;
+}
+
+.sup_but:hover {
+    background-color: #00A3CC;
+    transition: 0.3s all;
+}
+
+.sup_but:active {
+    filter: brightness(120%);
+}
+
+@media (width <= 1024px) {
+    .support_con {
+        max-width: 500px;
+        padding: 0 15px;
+    }
+    .sup_field, .sup_text {
+        max-width: 300px;
+    }
+}
+
+@media (width <= 768px) {
+    .support_con {
+        max-width: 400px;
+    }
+    .sup_field, .sup_text {
+        max-width: 250px;
+    }
+    .sup_but {
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+}
+
+@media (width <= 480px) {
+    .support_con {
+        max-width: 300px;
+        gap: 15px;
+    }
+    .sup_field, .sup_text {
+        max-width: 200px;
+    }
+    .sup_but {
+        padding: 4px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (width <= 320px) {
+    .support_con {
+        max-width: 250px;
+        padding: 0 5px;
+    }
+    .sup_field, .sup_text {
+        max-width: 180px;
+    }
+    .sup_but {
+        padding: 3px 10px;
+        font-size: 10px;
+    }
+}

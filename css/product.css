@@ -1,0 +1,526 @@
+.prod_con {
+    margin-top: 20px;
+    padding: 20px;
+    display: flex;
+    gap: 30px;
+    background-color: #2C2C2E;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    color: #E0E0E0;
+}
+
+.prod_img {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1/1;
+}
+
+.prod_img img {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 15px;
+}
+
+.prod_info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.interact_con {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.chars_con {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.char {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #A0A0A0;
+}
+
+.desc_con {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.prod_desc {
+    line-height: 1.6;
+}
+
+.prod_price {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 9px;
+    border-radius: 5px;
+    background-color: #2C2C2E;
+    white-space: nowrap;
+    font-family: os_bold, sans-serif;
+}
+
+.price {
+    font-size: 24px;
+}
+
+.price_sign {
+    font-size: 20px;
+}
+
+.prod_cart {
+    cursor: pointer;
+    padding: 14px 30px;
+    border-radius: 5px;
+    border: 1px solid #00D4FF;
+    white-space: nowrap;
+    font-size: 16px;
+    font-family: os_medium, sans-serif;
+    color: #00D4FF;
+    background-color: #2C2C2E;
+    transition: 0.3s all;
+}
+
+.prod_cart:hover {
+    color: #2C2C2E;
+    background-color: #00D4FF;
+    transition: 0.3s all;
+}
+
+.prod_cart:active {
+    filter: brightness(120%);
+    transition: 0.3s all;
+}
+
+.prod_fav {
+    display: flex;
+    align-self: center;
+    cursor: pointer;
+    fill: #A0A0A0;
+    background-color: #2C2C2E;
+    padding: 10px;
+    border: 1px solid #A0A0A0;
+    border-radius: 5px;
+    transition: 0.3s all;
+}
+
+.prod_fav:hover {
+    fill: #00D4FF;
+    border-color: #00D4FF;
+    transition: 0.3s all;
+}
+
+.sale {
+    position: absolute;
+    z-index: 2;
+    padding: 10px 10px;
+    border-radius: 10px;
+    color: #2C2C2E;
+    background-color: rgba(255, 149, 0, 0.8);
+}
+
+/* Стили для отзывов */
+.reviews_con {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.reviews_con h3 {
+    font-size: 20px;
+    font-family: os_bold, sans-serif;
+}
+
+.no_reviews {
+    color: #A0A0A0;
+    font-size: 16px;
+    font-family: os_medium, sans-serif;
+}
+
+.review {
+    border-bottom: 1px solid #A0A0A0;
+    padding: 15px 0;
+}
+
+.review_header {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-family: os_medium, sans-serif;
+}
+
+.review_user {
+    font-family: os_bold, sans-serif;
+    color: #E0E0E0;
+}
+
+.review_date {
+    color: #A0A0A0;
+}
+
+.review_rating {
+    color: #00D4FF;
+}
+
+.review_comment {
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: os_medium, sans-serif;
+    color: #E0E0E0;
+}
+
+/* Стили для формы добавления отзыва */
+.review_form {
+    margin-top: 30px;
+}
+
+.review_form h3 {
+    font-size: 20px;
+    font-family: os_bold, sans-serif;
+    margin-bottom: 15px;
+}
+
+.auth_message {
+    color: #A0A0A0;
+    font-size: 16px;
+    font-family: os_medium, sans-serif;
+}
+
+.auth_message a {
+    color: #00D4FF;
+    text-decoration: underline;
+}
+
+.auth_message a:hover {
+    color: #00A3CC;
+}
+
+.success_message {
+    color: #00FF00;
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-family: os_medium, sans-serif;
+}
+
+.error {
+    color: #FF4D4D;
+    font-size: 14px;
+    margin-bottom: 10px;
+    font-family: os_medium, sans-serif;
+}
+
+.form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.form_group label {
+    font-family: os_medium, sans-serif;
+    font-size: 14px;
+    color: #E0E0E0;
+}
+
+.form_group input,
+.form_group textarea {
+    padding: 8px;
+    border: 1px solid #A0A0A0;
+    border-radius: 5px;
+    background-color: #2C2C2E;
+    color: #E0E0E0;
+    font-family: os_medium, sans-serif;
+    font-size: 14px;
+}
+
+.form_group input[aria-invalid="true"],
+.form_group textarea[aria-invalid="true"] {
+    border-color: #FF4D4D;
+}
+
+.form_group input:focus,
+.form_group textarea:focus {
+    outline: none;
+    border-color: #00D4FF;
+    transition: border-color 0.3s ease;
+}
+
+.form_group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form_group input[type="file"] {
+    padding: 6px 0;
+}
+
+.review_submit {
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 1px solid #00D4FF;
+    font-size: 14px;
+    font-family: os_medium, sans-serif;
+    color: #00D4FF;
+    background-color: #2C2C2E;
+    transition: 0.3s all;
+}
+
+.review_submit:hover {
+    color: #2C2C2E;
+    background-color: #00D4FF;
+    transition: 0.3s all;
+}
+
+.review_submit:active {
+    filter: brightness(120%);
+    transition: 0.3s all;
+}
+
+@media (width <= 1024px) {
+    .prod_con {
+        width: 100%;
+        padding: 15px;
+    }
+    .prod_img, .prod_img img {
+        max-width: 350px;
+    }
+    .reviews_con {
+        margin-top: 25px;
+    }
+    .reviews_con h3 {
+        font-size: 18px;
+    }
+    .no_reviews {
+        font-size: 14px;
+    }
+    .review_header {
+        font-size: 13px;
+        gap: 10px;
+    }
+    .review_comment {
+        font-size: 14px;
+    }
+    .review_form h3 {
+        font-size: 18px;
+    }
+    .auth_message {
+        font-size: 14px;
+    }
+    .success_message {
+        font-size: 14px;
+    }
+    .error {
+        font-size: 13px;
+    }
+    .form_group label {
+        font-size: 13px;
+    }
+    .form_group input,
+    .form_group textarea {
+        font-size: 13px;
+    }
+    .review_submit {
+        font-size: 13px;
+        padding: 8px 18px;
+    }
+}
+
+@media (width <= 768px) {
+    .prod_con {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    .prod_img, .prod_img img {
+        max-width: 250px;
+    }
+    .price {
+        font-size: 20px;
+    }
+    .price_sign {
+        font-size: 16px;
+    }
+    .prod_cart {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    .reviews_con {
+        margin-top: 20px;
+        gap: 10px;
+    }
+    .reviews_con h3 {
+        font-size: 16px;
+    }
+    .no_reviews {
+        font-size: 13px;
+    }
+    .review {
+        padding: 10px 0;
+    }
+    .review_header {
+        font-size: 12px;
+        gap: 8px;
+    }
+    .review_comment {
+        font-size: 13px;
+    }
+    .review_form {
+        margin-top: 20px;
+    }
+    .review_form h3 {
+        font-size: 16px;
+    }
+    .auth_message {
+        font-size: 13px;
+    }
+    .success_message {
+        font-size: 13px;
+    }
+    .error {
+        font-size: 12px;
+    }
+    .form_group label {
+        font-size: 12px;
+    }
+    .form_group input,
+    .form_group textarea {
+        font-size: 12px;
+    }
+    .review_submit {
+        font-size: 12px;
+        padding: 6px 15px;
+    }
+}
+
+@media (width <= 480px) {
+    .prod_con {
+        padding: 10px;
+    }
+    .prod_img, .prod_img img {
+        max-width: 200px;
+    }
+    .prod_cart {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+    .interact_con {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .reviews_con {
+        margin-top: 15px;
+        gap: 8px;
+    }
+    .reviews_con h3 {
+        font-size: 14px;
+    }
+    .no_reviews {
+        font-size: 12px;
+    }
+    .review {
+        padding: 8px 0;
+    }
+    .review_header {
+        font-size: 11px;
+        gap: 6px;
+    }
+    .review_comment {
+        font-size: 12px;
+    }
+    .review_form {
+        margin-top: 15px;
+    }
+    .review_form h3 {
+        font-size: 14px;
+    }
+    .auth_message {
+        font-size: 12px;
+    }
+    .success_message {
+        font-size: 12px;
+    }
+    .error {
+        font-size: 11px;
+    }
+    .form_group label {
+        font-size: 11px;
+    }
+    .form_group input,
+    .form_group textarea {
+        font-size: 11px;
+    }
+    .review_submit {
+        font-size: 11px;
+        padding: 5px 12px;
+    }
+}
+
+@media (width <= 320px) {
+    .prod_img, .prod_img img {
+        max-width: 150px;
+    }
+    .price {
+        font-size: 18px;
+    }
+    .price_sign {
+        font-size: 14px;
+    }
+    .reviews_con {
+        margin-top: 10px;
+        gap: 5px;
+    }
+    .reviews_con h3 {
+        font-size: 12px;
+    }
+    .no_reviews {
+        font-size: 11px;
+    }
+    .review {
+        padding: 5px 0;
+    }
+    .review_header {
+        font-size: 10px;
+        gap: 5px;
+    }
+    .review_comment {
+        font-size: 11px;
+    }
+    .review_form {
+        margin-top: 10px;
+    }
+    .review_form h3 {
+        font-size: 12px;
+    }
+    .auth_message {
+        font-size: 11px;
+    }
+    .success_message {
+        font-size: 11px;
+    }
+    .error {
+        font-size: 10px;
+    }
+    .form_group label {
+        font-size: 10px;
+    }
+    .form_group input,
+    .form_group textarea {
+        font-size: 10px;
+    }
+    .review_submit {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+}

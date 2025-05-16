@@ -1,0 +1,29 @@
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #1A1A1D;
+    color: #E0E0E0;
+}
+
+@media (width <= 1024px) {
+    .info {
+        width: 100%;
+        gap: 25px;
+        padding: 0 15px;
+    }
+}
+
+@media (width <= 768px) {
+    .info {
+        gap: 20px;
+        padding: 0 10px;
+    }
+}
+
+@media (width <= 480px) {
+    .info {
+        gap: 15px;
+        padding: 0 5px;
+    }
+}

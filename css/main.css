@@ -1,0 +1,210 @@
+/* Основной слайдер */
+.sw1 {
+    min-height: 440px; /* Используем min-height вместо height для гибкости */
+    border-radius: 10px;
+    background-color: #2C2C2E;
+    transition: min-height 0.3s ease;
+}
+
+/* Слайдеры для продуктов */
+.sw2 {
+    margin-top: 20px;
+    min-height: 440px; /* Используем min-height вместо height для гибкости */
+    position: relative;
+    transition: min-height 0.3s ease;
+}
+
+/* Общие стили для слайдов */
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Кнопки навигации для слайдеров */
+.prev2, .next2 {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    visibility: hidden;
+    opacity: 0;
+    background-color: #2C2C2E;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: background-color 0.3s ease, opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.prev2 {
+    left: 10px;
+}
+
+.next2 {
+    right: 10px;
+}
+
+/* Показываем кнопки при ховере на десктопе */
+.sw2:hover .prev2,
+.sw2:hover .next2 {
+    visibility: visible;
+    opacity: 1;
+}
+
+.prev2:hover, .next2:hover {
+    background-color: #00D4FF;
+    transition: background-color 0.3s ease;
+}
+
+.prev2:active, .next2:active {
+    filter: brightness(120%);
+}
+
+.prev2::after, .next2::after {
+    color: #E0E0E0;
+    font-size: 14px;
+    font-weight: 1000;
+    transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.prev2:hover::after, .next2:hover::after {
+    color: #2C2C2E;
+    transition: color 0.3s ease;
+}
+
+/* Блок с партнёрами */
+.brands {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Заменили space-between на center для равномерного распределения */
+    flex-wrap: wrap;
+    gap: 20px;
+    transition: gap 0.3s ease;
+}
+
+.brands img {
+    max-width: 200px; /* Добавили max-width для гибкости */
+    width: 100%;
+    height: auto;
+    transition: max-width 0.3s ease;
+}
+
+/* Адаптивность */
+
+/* Планшеты (≤1024px) */
+@media (width <= 1024px) {
+    .sw1, .sw2 {
+        width: 100%;
+        min-height: 400px;
+    }
+    .prev2, .next2 {
+        left: 15px;
+    }
+    .next2 {
+        right: 15px;
+    }
+    .brands {
+        width: 100%;
+        padding: 0 15px;
+        justify-content: center;
+        gap: 20px;
+    }
+    .brands img {
+        max-width: 180px;
+    }
+}
+
+/* Малые планшеты (≤768px) */
+@media (width <= 768px) {
+    .sw1, .sw2 {
+        min-height: 300px;
+    }
+    .prev2, .next2 {
+        width: 35px;
+        height: 35px;
+        left: 10px;
+        visibility: visible; /* Делаем кнопки видимыми на мобильных */
+        opacity: 1;
+    }
+    .next2 {
+        right: 10px;
+    }
+    .prev2::after, .next2::after {
+        font-size: 12px;
+    }
+    .brands {
+        gap: 20px;
+        justify-content: center;
+    }
+    .brands img {
+        max-width: 150px;
+    }
+}
+
+/* Мобильные (≤480px) */
+@media (width <= 480px) {
+    .sw1, .sw2 {
+        min-height: 200px;
+    }
+    .prev2, .next2 {
+        width: 30px;
+        height: 30px;
+        left: 5px;
+        visibility: visible;
+        opacity: 1;
+    }
+    .next2 {
+        right: 5px;
+    }
+    .prev2::after, .next2::after {
+        font-size: 10px;
+    }
+    .brands {
+        gap: 15px;
+    }
+    .brands img {
+        max-width: 100px;
+    }
+}
+
+/* Очень маленькие экраны (≤320px) */
+@media (width <= 320px) {
+    .sw1, .sw2 {
+        min-height: 150px;
+    }
+    .prev2, .next2 {
+        width: 25px;
+        height: 25px;
+        left: 5px;
+        visibility: visible;
+        opacity: 1;
+    }
+    .next2 {
+        right: 5px;
+    }
+    .prev2::after, .next2::after {
+        font-size: 8px;
+    }
+    .brands {
+        gap: 10px;
+    }
+    .brands img {
+        max-width: 80px;
+    }
+}

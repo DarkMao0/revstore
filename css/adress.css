@@ -1,0 +1,75 @@
+.locate {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #1A1A1D;
+    color: #E0E0E0;
+}
+
+.g-map iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+}
+
+.shop {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.inf {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.inf a {
+    color: #A0A0A0;
+}
+
+.contact:hover {
+    color: #00D4FF;
+}
+
+@media (width <= 1024px) {
+    .locate {
+        width: 100%;
+        padding: 0 15px;
+    }
+    .g-map iframe {
+        height: 400px;
+    }
+}
+
+@media (width <= 768px) {
+    .locate {
+        margin-top: 20px;
+        gap: 20px;
+    }
+    .g-map iframe {
+        height: 300px;
+    }
+    .shop {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    .inf {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (width <= 480px) {
+    .locate {
+        gap: 15px;
+    }
+    .g-map iframe {
+        height: 200px;
+    }
+    .inf a {
+        font-size: 14px;
+    }
+}
