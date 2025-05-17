@@ -1,15 +1,5 @@
 /* Общие стили */
 @font-face {
-    font-family: "os_light";
-    src: url(../fonts/OpenSans-Light.ttf);
-}
-
-@font-face {
-    font-family: "os_regular";
-    src: url(../fonts/OpenSans-Regular.ttf);
-}
-
-@font-face {
     font-family: "os_medium";
     src: url(../fonts/OpenSans-Medium.ttf);
 }
@@ -25,13 +15,10 @@
 }
 
 @font-face {
-    font-family: "os_xbold";
-    src: url(../fonts/OpenSans-ExtraBold.ttf);
-}
-@font-face {
     font-family: "MGRR";
     src: url(../fonts/TechnoHideo.ttf);
 }
+
 @font-face {
     font-family: "reg";
     src: url(../fonts/mg-rising.ttf);
@@ -654,8 +641,7 @@ button.wishlist {
         gap: 25px;
     }
 
-    .log,
-    .log_bottom {
+    .log {
         width: 160px;
     }
 
@@ -669,7 +655,7 @@ button.wishlist {
 
     .search_and_sort {
         max-width: 450px;
-                margin-left: auto; /* Сдвигаем поиск вправо */
+        margin-left: auto; /* Сдвигаем поиск вправо */
     }
 
     .search_field {
@@ -1224,5 +1210,144 @@ button.wishlist {
 
     .show_button {
         bottom: 15px;
+    }
+}
+
+/* Новые медиа-запросы */
+
+/* Десктоп (≥1024px) */
+@media (min-width: 1024px) {
+    .header_actions {
+        display: flex;
+        flex-direction: column;
+        padding: 8px 6px;
+    }
+
+    .top_row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .logo_and_profile {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .log {
+        margin-right: 20px;
+    }
+
+    .profile_actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .search_and_sort {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        width: auto;
+        max-width: 300px; /* Ограничиваем ширину поиска */
+        margin-left: auto; /* Сдвигаем поиск вправо */
+    }
+
+    .search_bar {
+        width: 100%;
+    }
+
+    .search_icon {
+        display: none; /* Скрываем иконку поиска */
+    }
+
+    .nav_sections {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-top: 10px; /* Отступ от логотипа */
+    }
+
+    .burger {
+        display: none; /* Скрываем бургер на больших экранах */
+    }
+
+    .bottom_row {
+        display: none; /* Скрываем bottom_row, так как поиск теперь в top_row */
+    }
+}
+
+/* Восстановление поведения на мобильных (< 600px) */
+@media (max-width: 599px) {
+    .header_actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .top_row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        width: 100%;
+    }
+
+    .logo_and_profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .bottom_row {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .nav_container {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .search_and_sort {
+        width: 100%;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .search_bar {
+        display: none;
+    }
+
+    .search_icon {
+        display: block;
+    }
+
+    .nav_sections {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 12px;
+        background-color: #2C2C2E;
+        padding: 15px;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        z-index: 999;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .nav_container.active .nav_sections {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
 }
