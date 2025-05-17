@@ -28,7 +28,7 @@
 					<div class="tel_ban">
 						<img src="/img/svg/sup.svg">
 						<h3>Наша служба поддержки</h3>
-						<a class="call" href="tel:+79878174272">+7 (987) 817-42-72</a>
+						<a class="call" href="tel:+79878999999">+7 (987) 899-99-99</a>
 						<a>Нажмите на номер для звонка</a>
 					</div>
 				</div>
