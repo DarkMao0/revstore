@@ -1,17 +1,17 @@
 /* Общие стили */
 @font-face {
     font-family: "os_medium";
-    src: url(../fonts/OpenSans-Medium.ttf);
+    src: url(../fonts/Exo2-Medium.ttf);
 }
 
 @font-face {
     font-family: "os_bold";
-    src: url(../fonts/OpenSans-SemiBold.ttf);
+    src: url(../fonts/Exo2-Bold.ttf);
 }
 
 @font-face {
     font-family: "os_sbold";
-    src: url(../fonts/OpenSans-Bold.ttf);
+    src: url(../fonts/Exo2-SemiBold.ttf);
 }
 
 @font-face {
@@ -665,7 +665,7 @@ button.wishlist {
     }
 
     .search_but {
-        padding: 8px 12px;
+        padding: 12px;
     }
 
     .search_but svg {
@@ -833,6 +833,10 @@ button.wishlist {
         flex-wrap: wrap; /* Разрешаем перенос элементов */
         max-width: 100%; /* Ограничиваем ширину */
         gap: 5px; /* Уменьшаем зазор */
+        margin-left: auto;
+        justify-content: flex-end; 
+        display: flex;
+        margin-bottom: 5px;
     }
 
     .sort {
@@ -861,7 +865,7 @@ button.wishlist {
     }
 
     .search_panel .search_but {
-        padding: 8px 12px;
+        padding: 12px;
     }
 
     .search_panel .search_but svg {
@@ -884,6 +888,7 @@ button.wishlist {
         position: fixed;
         left: 0;
         right: 0;
+        top: 100px; /* Отступ от шапки */
         flex-direction: column;
         gap: 15px;
         background-color: #2C2C2E;
@@ -941,7 +946,7 @@ button.wishlist {
     }
 
     .nav_sections {
-        top: 90px;
+        top: 100px;
     }
 
     .search_and_sort {
