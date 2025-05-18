@@ -45,7 +45,7 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="utf-8">
     <title>REVstore - MGRR Merch</title>
-    <link rel="icon" href="/img/fav.png" type="image/x-icon">
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.ico" />
     <link rel="stylesheet" href="/css/swiper_lib.css">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/main.css">

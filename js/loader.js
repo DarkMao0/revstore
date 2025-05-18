@@ -32,9 +32,9 @@ function simulateLoading() {
             loader.classList.add('hidden');
             setTimeout(() => {
                 loader.style.display = 'none';
-            }, 400); // Ждём 1 секунду (длительность анимации slice)
+            }, 200); // Ждём 1 секунду (длительность анимации slice)
         }
-    }, 25);
+    }, 15);
 }
 
 window.addEventListener('load', simulateLoading);
