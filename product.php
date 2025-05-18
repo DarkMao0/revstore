@@ -80,7 +80,7 @@ $reviewMessage = getAlert('review_message');
 <html lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Cerama Granit - <?php echo $product['name']; ?></title>
+    <title>REVSTORE - <?php echo $product['name']; ?></title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/product.css">

@@ -2,7 +2,7 @@
 <html  lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Revengeance Store - 404</title>
+    <title>REVSTORE - 404</title>
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/errors.css">
@@ -16,7 +16,7 @@
             <div class="error_con">
                 <div class="simple_logo">
                     <a class="color_let">REV</a>
-                    <a>Store</a>
+                    <a>STORE</a>
                 </div>
                 <a class="big_num">404</a>
                 <a class="error_desc">Такой страницы не существует</a>

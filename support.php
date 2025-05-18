@@ -2,7 +2,7 @@
 <html  lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-	<title>Revengeance Store - Поддержка</title>
+	<title>REVSTORE - Поддержка</title>
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<link rel="stylesheet" href="/css/common.css">
 	<link rel="stylesheet" href="/css/support.css">

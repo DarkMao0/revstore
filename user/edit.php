@@ -8,7 +8,7 @@ denyNoUser();
 <html  lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Revengeance Store - Редактирование профиля</title>
+    <title>REVSTORE - Редактирование профиля</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/sign.css">
