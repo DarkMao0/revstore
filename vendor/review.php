@@ -31,7 +31,7 @@ if (!$review_id || !$product_id) {
 
 if ($action === 'update') {
     $rating = filter_input(INPUT_POST, 'rating', FILTER_VALIDATE_INT);
-    $comment = trim(filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_STRING));
+    $comment = trim(filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_SPECIAL_CHARS));
 
     if ($rating === null || $rating < 1 || $rating > 5) {
         setAlert('review_message', 'Рейтинг должен быть от 1 до 5.');
