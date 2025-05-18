@@ -51,7 +51,7 @@ foreach ($products as $product) {
 <head>
     <meta charset="utf-8">
     <title>Cerama Granit - Каталог</title>
-    <link rel="icon" href="/img/fav.png" type="image/x-icon">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/catalog.css">
     <script defer src="/js/scroll.js"></script>

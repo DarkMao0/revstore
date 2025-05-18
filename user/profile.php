@@ -8,8 +8,8 @@ denyNoUser();
 <html  lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-	<title>Cerama Granit - Профиль</title>
-	<link rel="icon" href="/img/fav.png" type="image/x-icon">
+	<title>Revengeance Store - Профиль</title>
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<link rel="stylesheet" href="/css/common.css">
 	<link rel="stylesheet" href="/css/user.css">
     <script defer src="/js/scroll.js"></script>

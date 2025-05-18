@@ -46,8 +46,8 @@ $currentRank = $rankMap[$review['rating']] ?? 'D';
 <html lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Редактировать отзыв - Cerama Granit</title>
-    <link rel="icon" href="/img/fav.png" type="image/x-icon">
+    <title>Редактировать отзыв - Revengeance Store</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/review.css">
     <script defer src="/js/rating-scale.js"></script>

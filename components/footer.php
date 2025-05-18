@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="company">
-            <a>© REVstore, 2025</a>
+            <a>© REVSTORE, 2025</a>
         </div>
     </div>
 </footer>

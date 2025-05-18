@@ -12,6 +12,7 @@ $activeSort = $_GET['sort'] ?? 'default';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
     <link rel="stylesheet" href="/css/common.css">
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <?php if (preg_match('~^/catalog(\?|$)~', $currentUri)): ?>
         <link rel="stylesheet" href="/css/catalog.css">
     <?php endif; ?>
