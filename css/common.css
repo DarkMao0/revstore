@@ -540,6 +540,7 @@ input:-webkit-autofill {
     display: flex;
     gap: 30px;
     align-items: center;
+    fill: #E0E0E0;
 }
 
 .soc a,
@@ -1052,7 +1053,7 @@ button.wishlist {
 
     .log,
     .log_bottom {
-        width: 120px;
+        width: 100px;
     }
 
     .burger {
@@ -1076,9 +1077,10 @@ button.wishlist {
     }
 
     .search_panel .search_field {
-        font-size: 14px;
-        min-height: 36px;
+        font-size: 12px;
+        min-height: 30px;
         padding: 6px 10px;
+        max-width: 100dvw;
     }
 
     .search_panel .search_but {
@@ -1114,6 +1116,8 @@ button.wishlist {
     .search_and_sort {
         max-width: 100%;
         gap: 5px;
+        margin-left: 0;
+        justify-content: flex-start;
     }
 
     .sort {

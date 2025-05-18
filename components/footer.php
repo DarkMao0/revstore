@@ -76,8 +76,3 @@
         </div>
     </div>
 </footer>
-<div class="back-to-top">
-    <svg width="24" height="24" viewBox="0 0 24 24">
-        <path d="M3,19.5l-3-3.1L12,4.5l12,11.9l-3,3.1l-9-9L3,19.5z"/>
-    </svg>
-</div>

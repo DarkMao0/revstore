@@ -133,25 +133,6 @@ h1 {
 
 
 /* Адаптивность */
-
-/* Большие ноутбуки и десктопы (до 1400px) */
-@media (max-width: 1400px) {
-    .sw1 {
-        height: 440px;
-        max-width: 1200px;
-    } 
-    .sw2 {
-        height: 380px;
-        max-width: 900px;
-    }
-    .brands {
-        max-width: 900px;
-    }
-    .brands img {
-        max-width: 160px;
-    }
-}
-
 /* Планшеты (до 1024px) */
 @media (max-width: 1024px) {
     .sw1 {
