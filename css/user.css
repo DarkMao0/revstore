@@ -26,8 +26,8 @@
     transition: 0.3s all;
 }
 
-.exit_but:hover, .prof_edit:hover {
-    background-color: #00A3CC;
+.exit_but:hover {
+    background-color: #00D4FF;
     transition: 0.3s all;
 }
 
@@ -53,9 +53,14 @@
 
 .edit_sign {
     width: 16px;
+    transition: 0.3s all;
+}
+
+.edit_sign:hover {
     fill: #00D4FF;
     transition: 0.3s all;
 }
+
 
 @media (width <= 1024px) {
     .user_profile {

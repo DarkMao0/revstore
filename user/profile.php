@@ -36,7 +36,7 @@ denyNoUser();
                             <button class="exit_but">Выйти из профиля</button>
                         </form>
                         <a href="/user/edit.php" class="prof_edit" title="Редактировать профиль">
-                            <svg class="edit_sign" x="0px" y="0px" viewBox="0 0 101 111">
+                            <svg class="edit_sign" x="0px" y="0px" viewBox="0 0 101 111" fill="#00D4FF">
                                 <path d="M59.2,21.7c7.8,7,15.4,13.9,23.3,20.9C66.3,60.7,50.2,78.6,34,96.8C26.1,
                                 89.9,18.4,83.1,10.5,76 C26.7,58,42.9,39.9,59.2,21.7z"/>
                                 <path d="M91.6,32.5c-7.8-7-15.5-13.9-23.2-20.8c2.3-2.7,4.5-5.4,6.8-7.9c0.9-1,
