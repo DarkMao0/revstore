@@ -2,8 +2,8 @@
 <html  lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Cerama Granit - 500</title>
-    <link rel="icon" href="/img/fav.png" type="image/x-icon">
+    <title>Revengeance Store - Вход</title>
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/errors.css">
 </head>
@@ -13,8 +13,8 @@
         <div class="main_dir">
             <div class="error_con">
                 <div class="simple_logo">
-                    <a class="color_let">CERAMA</a>
-                    <a>GRANIT</a>
+                    <a class="color_let">REV</a>
+                    <a>Store</a>
                 </div>
                 <a class="big_num">503</a>
                 <a class="error_desc">Критическая ошибка на сервере</a>
