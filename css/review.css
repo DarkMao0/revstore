@@ -5,12 +5,14 @@
     display: inline-block;
     margin-top: 10px;
     padding: 10px 20px;
-    background: #4CAF50;
+    background: #00A3CC;
     color: white;
     text-decoration: none;
     border-radius: 4px;
 }
-.add_review_link:hover { background: #45a049; }
+.add_review_link:hover { 
+    background: #00D4FF; 
+}
 .review-actions {
     margin-top: 5px;
 }
