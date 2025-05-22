@@ -6,9 +6,14 @@ $pdo = getPDO();
 
 $user_id = $_SESSION['user']['id'];
 
-$stmt = $pdo->prepare("SELECT p.id, p.name, p.price, p.image, p.manufacturer FROM products p INNER JOIN wishlist w ON p.id = w.productID WHERE w.userID = :userID");
+$query = "SELECT p.id as product_id, p.name as product_name, p.price, p.sale, p.available, p.image FROM products p INNER JOIN wishlist w ON p.id = w.productID WHERE w.userID = :userID";
+$params = [
+        'userID' => $user_id
+];
+
+$stmt = $pdo->prepare($query);
 try {
-    $stmt->execute(['userID' => $user_id]);
+    $stmt->execute($params);
 }
 catch (\PDOException $e) {
     error_log($e->getMessage());

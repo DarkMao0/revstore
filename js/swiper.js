@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     slidesOffsetAfter: 5,
                 },
                 480: {
-                    slidesPerView: 1.5,
+                    slidesPerView: 1.75,
                     spaceBetween: 10,
                     slidesOffsetBefore: 5,
                     slidesOffsetAfter: 5,

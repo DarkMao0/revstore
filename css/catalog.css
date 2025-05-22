@@ -122,7 +122,6 @@
     content: '';
     display: flex;
     position: absolute;
-    bottom: 2px;
     width: 16px;
     height: 16px;
     border: 1px solid #A0A0A0;
@@ -348,7 +347,7 @@
 }
 
 .card_price {
-    margin-top: 5px;
+    margin-top: 10px;
     display: flex;
     align-items: baseline;
     gap: 2px; 

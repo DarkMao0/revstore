@@ -139,14 +139,74 @@ foreach ($products_blade as $product) {
                                         <div class="desc">
                                             <span class="prod_name"><?php echo $data_random['name']; ?></span>
                                         </div>
-                                        <div class="price">
-                                            <span><?php echo $data_random['price']; ?></span>
-                                            <span class="price_sign">₽</span>
+                                        <div class="card_price">
+                                        <span class="price"><?php echo $data_random['price']; ?></span>
+                                        <span class="price_sign">₽</span>
                                         </div>
                                         <!-- Средний рейтинг в виде ранга -->
                                         <div class="average-rating">
                                             <?php
                                             $averageRating = $randomRatings[$data_random['id']];
+                                            if ($averageRating > 0) {
+                                                $averageRank = getRankFromRating($averageRating);
+                                                echo '<div class="rank-container">';
+                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
+                                                echo '</div>';
+                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
+                                            } else {
+                                                echo "Нет оценок";
+                                            }
+                                            ?>
+                                        </div>
+                                    </a>
+                                    <div class="btns">
+                                        <form action="/vendor/cart" method="post">
+                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
+                                            <input type="hidden" name="action" value="active">
+                                            <button type="submit" class="cart_but">В корзину</button>
+                                        </form>
+                                        <form action="/vendor/wishlist" method="post">
+                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
+                                            <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_random['id']) ? 'wishlist' : ''); ?>">
+                                                <svg width="30px" height="30px" viewBox="0 0 32 32">
+                                                    <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
+                                                    0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336
+                                                    0.751-0.75v-28c-0-0.414-0.336-0.75-0.75-0.75v0z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="swiper-button-prev prev2"></div>
+                    <div class="swiper-button-next next2"></div>
+                </div>
+            </div>
+             <div class="main_dir">
+                <h1>Клинки</h1>
+                <div class="swiper sw2">
+                    <div class="swiper-wrapper">
+                        <?php foreach ($products_blade as $blade): ?>
+                            <div class="swiper-slide sl2">
+                                <div class="prod">
+                                    <?php if (isset($blade['sale'])): ?>
+                                        <a class="sale">-<?php echo $blade['sale']; ?>%</a>
+                                    <?php endif; ?>
+                                    <a href="/product.php?id=<?php echo $blade['id'] ?>">
+                                        <img class="prod_pic" src="<?php echo $blade['image']; ?>">
+                                        <div class="desc">
+                                            <span class="prod_name"><?php echo $blade['name']; ?></span>
+                                        </div>
+                                        <div class="card_price">
+                                            <span class="price"><?php echo $blade['price']; ?></span>
+                                            <span class="price_sign">₽</span>
+                                        </div>
+                                        <!-- Средний рейтинг в виде ранга -->
+                                        <div class="average-rating">
+                                            <?php
+                                            $averageRating = $randomRatings[$blade['id']];
                                             if ($averageRating > 0) {
                                                 $averageRank = getRankFromRating($averageRating);
                                                 echo '<div class="rank-container">';
@@ -199,8 +259,8 @@ foreach ($products_blade as $product) {
                                         <div class="desc">
                                             <span class="prod_name"><?php echo $data_new['name']; ?></span>
                                         </div>
-                                        <div class="price">
-                                            <span><?php echo $data_new['price']; ?></span>
+                                        <div class="card_price">
+                                            <span class="price"><?php echo $data_new['price']; ?></span>
                                             <span class="price_sign">₽</span>
                                         </div>
                                         <!-- Средний рейтинг в виде ранга -->
@@ -259,8 +319,8 @@ foreach ($products_blade as $product) {
                                         <div class="desc">
                                             <span class="prod_name"><?php echo $data_sale['name']; ?></span>
                                         </div>
-                                        <div class="price">
-                                            <span><?php echo $data_sale['price']; ?></span>
+                                        <div class="card_price">
+                                           <span class="price"><?php echo $data_sale['price']; ?></span>
                                             <span class="price_sign">₽</span>
                                         </div>
                                         <!-- Средний рейтинг в виде ранга -->
@@ -288,66 +348,6 @@ foreach ($products_blade as $product) {
                                         <form action="/vendor/wishlist" method="post">
                                             <input type="hidden" name="productID" value="<?php echo $data_sale['id'] ?>">
                                             <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_sale['id']) ? 'wishlist' : ''); ?>">
-                                                <svg width="30px" height="30px" viewBox="0 0 32 32">
-                                                    <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
-                                                    0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336
-                                                    0.751-0.75v-28c-0-0.414-0.336-0.75-0.75-0.75v0z"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <div class="swiper-button-prev prev2"></div>
-                    <div class="swiper-button-next next2"></div>
-                </div>
-            </div>
-             <div class="main_dir">
-                <h1>Клинки</h1>
-                <div class="swiper sw2">
-                    <div class="swiper-wrapper">
-                        <?php foreach ($products_blade as $blade): ?>
-                            <div class="swiper-slide sl2">
-                                <div class="prod">
-                                    <?php if (isset($blade['sale'])): ?>
-                                        <a class="sale">-<?php echo $blade['sale']; ?>%</a>
-                                    <?php endif; ?>
-                                    <a href="/product.php?id=<?php echo $blade['id'] ?>">
-                                        <img class="prod_pic" src="<?php echo $blade['image']; ?>">
-                                        <div class="desc">
-                                            <span class="prod_name"><?php echo $blade['name']; ?></span>
-                                        </div>
-                                        <div class="price">
-                                            <span><?php echo $blade['price']; ?></span>
-                                            <span class="price_sign">₽</span>
-                                        </div>
-                                        <!-- Средний рейтинг в виде ранга -->
-                                        <div class="average-rating">
-                                            <?php
-                                            $averageRating = $randomRatings[$blade['id']];
-                                            if ($averageRating > 0) {
-                                                $averageRank = getRankFromRating($averageRating);
-                                                echo '<div class="rank-container">';
-                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
-                                                echo '</div>';
-                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
-                                            } else {
-                                                echo "Нет оценок";
-                                            }
-                                            ?>
-                                        </div>
-                                    </a>
-                                    <div class="btns">
-                                        <form action="/vendor/cart" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
-                                            <input type="hidden" name="action" value="active">
-                                            <button type="submit" class="cart_but">В корзину</button>
-                                        </form>
-                                        <form action="/vendor/wishlist" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
-                                            <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_random['id']) ? 'wishlist' : ''); ?>">
                                                 <svg width="30px" height="30px" viewBox="0 0 32 32">
                                                     <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
                                                     0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336

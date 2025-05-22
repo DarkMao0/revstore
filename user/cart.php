@@ -22,7 +22,7 @@ $total = 0;
 ?>
 
 <!DOCTYPE html>
-<html  lang="ru" dir="ltr">
+<html lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
     <title>REVSTORE - Корзина</title>
@@ -53,14 +53,14 @@ $total = 0;
                     <?php foreach ($products as $data): ?>
                     <?php $total += $data['price'] * $data['quantity']; ?>
                         <tr>
-                            <td>
+                            <td data-label="Изображение">
                                 <a href="/product.php?id=<?php echo $data['id'] ?>">
                                     <img class="cart_image" src="<?php echo $data['image']; ?>">
                                 </a>
                             </td>
-                            <td><?php echo $data['name']; ?></td>
-                            <td><?php echo $data['price']; ?> ₽</td>
-                            <td>
+                            <td data-label="Название"><?php echo $data['name']; ?></td>
+                            <td data-label="Цена за единицу"><?php echo $data['price']; ?> ₽</td>
+                            <td data-label="Количество">
                                 <form class="refresh" action="/vendor/refreshquantity" method="post">
                                     <input type="hidden" name="productID" value="<?php echo $data['id']; ?>">
                                     <div class="quantity_changer">
@@ -78,8 +78,8 @@ $total = 0;
                                     <button type="submit" class="product_interact" name="update">Применить</button>
                                 </form>
                             </td>
-                            <td><?php echo $data['price'] * $data['quantity']; ?> ₽</td>
-                            <td>
+                            <td data-label="Общая стоимость"><?php echo $data['price'] * $data['quantity']; ?> ₽</td>
+                            <td data-label="Удалить">
                                 <form action="/vendor/deletefromcart" method="post">
                                     <input type="hidden" name="productID" value="<?php echo $data['id']; ?>">
                                     <button type="submit" class="cart_del" name="remove">Удалить</button>

@@ -22,8 +22,8 @@ $category = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <html  lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>Cerama Granit - Категории товара</title>
-    <link rel="icon" href="/img/fav.png" type="image/x-icon">
+    <title>REVSTORE - Категории</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/catalog.css">
     <script defer src="js/common.js"></script>

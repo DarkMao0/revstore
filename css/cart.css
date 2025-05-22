@@ -1,3 +1,4 @@
+/* Основные стили */
 .cart_items {
     display: flex;
     flex-direction: column;
@@ -18,6 +19,7 @@
     border-spacing: 0 20px;
     width: 100%;
     overflow-x: auto;
+    display: table; /* По умолчанию таблица */
 }
 
 .prod tr:first-child td:first-child,
@@ -51,7 +53,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 15px; /* Увеличиваем gap */
 }
 
 .quantity_changer {
@@ -60,6 +62,7 @@
     border: 1px solid #00D4FF;
     border-radius: 5px;
     width: fit-content;
+    gap: 5px; /* Добавляем небольшой gap между кнопками и инпутом */
 }
 
 .quantity_changer button {
@@ -148,7 +151,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 20px;
+    gap: 30px; /* Увеличиваем gap */
 }
 
 .order_but {
@@ -159,6 +162,7 @@
     font-size: 24px;
 }
 
+/* Адаптивность */
 @media (width <= 1024px) {
     .cart_items {
         width: 100%;
@@ -171,15 +175,75 @@
     .cart_image {
         width: 80px;
     }
-}
-
-@media (width <= 768px) {
+    .prod {
+        border-spacing: 0 15px;
+    }
     .prod td {
         font-size: 14px;
         padding: 8px;
     }
+    .quantity_changer button {
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+    .quantity_input {
+        width: 35px;
+        padding: 6px;
+    }
+}
+
+@media (width <= 768px) {
+    .cart_items {
+        min-height: 350px;
+    }
+    .no_data {
+        height: 350px;
+    }
+    /* Карточный вид */
+    .prod {
+        display: block; /* Убираем табличный вид */
+        overflow-x: visible;
+    }
+    .prod tr {
+        display: block;
+        margin-bottom: 20px; /* Увеличиваем расстояние между карточками */
+        border: 1px solid #A0A0A0;
+        border-radius: 10px;
+        padding: 15px; /* Увеличиваем внутренние отступы */
+        background-color: #2C2C2E;
+    }
+    .prod tr.titles {
+        display: none; /* Скрываем заголовки таблицы */
+    }
+    .prod td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        font-size: 14px;
+        padding: 10px 5px; /* Увеличиваем padding */
+        border-bottom: 1px solid #A0A0A0;
+        gap: 10px; /* Добавляем gap между меткой и значением */
+    }
+    .prod td:last-child {
+        border-bottom: none;
+    }
+    .prod td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #E0E0E0;
+        flex: 1;
+    }
+    .prod td a, .prod td form {
+        flex: 2;
+        text-align: right;
+    }
     .cart_image {
         width: 60px;
+    }
+    .quantity_changer {
+        justify-content: center;
+        gap: 3px; /* Уменьшаем gap для компактности */
     }
     .quantity_changer button {
         padding: 5px 10px;
@@ -189,15 +253,19 @@
         width: 30px;
         padding: 6px;
     }
+    .refresh {
+        gap: 10px; /* Уменьшаем gap на мобильных */
+    }
     .order {
         flex-direction: column;
-        gap: 15px;
+        gap: 20px; /* Увеличиваем gap */
     }
     .total {
         font-size: 20px;
     }
     .order_but {
         font-size: 14px;
+        padding: 8px 20px;
     }
 }
 
@@ -209,12 +277,14 @@
         height: 300px;
         font-size: 14px;
     }
-    .prod {
-        border-spacing: 0 10px;
+    .prod tr {
+        margin-bottom: 15px; /* Уменьшаем расстояние между карточками */
+        padding: 10px;
     }
     .prod td {
         font-size: 12px;
-        padding: 5px;
+        padding: 8px 4px;
+        gap: 8px; /* Уменьшаем gap */
     }
     .cart_image {
         width: 50px;
@@ -228,8 +298,18 @@
         padding: 4px;
     }
     .product_interact, .cart_del {
-        padding: 5px;
+        padding: 6px 10px;
         font-size: 12px;
+    }
+    .order_but {
+        font-size: 12px;
+        padding: 6px 15px;
+    }
+    .total {
+        font-size: 18px;
+    }
+    .order {
+        gap: 15px;
     }
 }
 
@@ -241,9 +321,14 @@
         height: 250px;
         font-size: 12px;
     }
+    .prod tr {
+        margin-bottom: 12px;
+        padding: 8px;
+    }
     .prod td {
         font-size: 10px;
-        padding: 3px;
+        padding: 6px 3px;
+        gap: 6px;
     }
     .cart_image {
         width: 40px;
@@ -255,5 +340,19 @@
     .quantity_input {
         width: 20px;
         padding: 3px;
+    }
+    .product_interact, .cart_del {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+    .order_but {
+        font-size: 10px;
+        padding: 5px 12px;
+    }
+    .total {
+        font-size: 16px;
+    }
+    .order {
+        gap: 12px;
     }
 }
