@@ -10,7 +10,6 @@ error_log("review - Received POST data: " . var_export($_POST, true));
 error_log("review - Request method: " . $_SERVER['REQUEST_METHOD']);
 error_log("review - Request URI: " . $_SERVER['REQUEST_URI']);
 
-$user = authorizedUserData();
 if (!$user) {
     setAlert('review_message', 'Пожалуйста, войдите в аккаунт, чтобы редактировать или удалить отзыв.');
     header("Location: /signin.php");
@@ -40,8 +39,8 @@ if ($action === 'update') {
         exit;
     }
 
-    if (empty($comment) || strlen($comment) > 1000) {
-        setAlert('review_message', 'Комментарий обязателен и не должен превышать 1000 символов.');
+    if (empty($comment) || strlen($comment) > 250) {
+        setAlert('review_message', 'Комментарий обязателен и не должен превышать 250 символов.');
         $redirectUrl = getProductUrl($product_id);
         header("Location: $redirectUrl");
         exit;

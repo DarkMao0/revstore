@@ -38,7 +38,7 @@ function errorMessage(string $field): string
     return $message;
 }
 
-function oldValue(string $key, mixed $value): void
+function oldValue(string $key, mixed $value): void //если версия php ниже 8.x поменять: mixed => string
 {
     $_SESSION['old'][$key] = $value;
 }
@@ -142,26 +142,26 @@ function denyUser(): void
     }
 }
 
-// Функции каталога
-function searchQuery(array &$queryBuilder, array &$queryParams, array $getArray): void
+function denyNoAdmin(): void
 {
-    if (isset($getArray['search']) && !empty(trim($getArray['search']))) {
-        $searchValue = "%" . trim($getArray['search']) . "%";
-        $queryBuilder[] = "(name LIKE ? OR manufacturer LIKE ?)";
-        $queryParams[] = $searchValue;
-        $queryParams[] = $searchValue;
+    if ($_SESSION['user']['status'] !== 'administrator') {
+        redirect('/');
     }
 }
 
-function filterQuery($filterType, &$queryBuilder, &$queryParams, $getArray): void
+function denyAdmin(): void
 {
-    if (isset($getArray[$filterType])) {
-        $queryBuilderPart = [];
-        foreach ($getArray[$filterType] as $value) {
-            $queryBuilderPart[] = "category LIKE ?";
-            $queryParams[] = "%" . $value . "%";
-        }
-        $queryBuilder[] = "(" . implode(' OR ', $queryBuilderPart) . ")";
+    if ($_SESSION['user']['status'] === 'administrator') {
+        redirect('/user/profile.php');
+    }
+}
+
+// Функции каталога
+function searchQuery(array &$queryBuilder, array &$queryParams, array $getArray): void {
+    if (isset($getArray['search']) && trim($getArray['search']) !== '') {
+        $searchValue = '%' . trim($getArray['search']) . '%';
+        $queryBuilder[] = "p.name LIKE ?";
+        $queryParams[] = $searchValue;
     }
 }
 

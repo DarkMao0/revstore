@@ -1,10 +1,27 @@
 <?php
 require_once __DIR__ . '/../vendor/functions.php';
-$currentUri = $_SERVER['REQUEST_URI'];
 $user = authorizedUserData();
+$user_id = $_SESSION['user']['id'] ?? null;
+
+$pdo = getPDO();
+
+$stmt = $pdo->prepare("SELECT SUM(quantity) as total FROM cart WHERE userID = :userID");
+try {
+    $stmt->execute(['userID' => $user_id]);
+}
+catch (\PDOException $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+    require('../errors/500.php');
+    die();
+}
+
+$total_quantity = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+global $activeSort, $sortQuery;
+
+$currentUri = $_SERVER['REQUEST_URI'];
 $searchValue = $_GET['search'] ?? '';
-$sortQuery = http_build_query(array_diff_key($_GET, ['sort' => '']));
-$activeSort = $_GET['sort'] ?? 'default';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -139,7 +156,10 @@ $activeSort = $_GET['sort'] ?? 'default';
                                     </svg>
                                 </div>
                                 <div class="search_bar">
-                                    <form action="/catalog.php" method="get" class="search">
+                                    <form action="<?php echo isset($_GET['id']) ? '/category.php' : '/search.php'; ?>" method="get" class="search">
+                                        <?php if (isset($_GET['id'])): ?>
+                                        <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+                                        <?php endif; ?>
                                         <input
                                             type="text"
                                             class="search_field"
@@ -201,7 +221,7 @@ $activeSort = $_GET['sort'] ?? 'default';
                                         </button>
                                     </form>
                                 </div>
-                                <?php if (preg_match('~^/catalog(\?|$)~', $currentUri)): ?>
+                                <?php if (preg_match('~^/category(\?|$)~', $currentUri)): ?>
                                     <div class="sort_con">
                                         <div class="sort" title="Сортировка">
                                             <svg viewBox="0 0 980 784">
@@ -220,10 +240,14 @@ $activeSort = $_GET['sort'] ?? 'default';
                                             </svg>
                                         </div>
                                         <div class="sort_content">
-                                            <a href="?<?php echo $sortQuery; ?>&sort=default" <?php echo ($activeSort == 'default' ? " class='first_str active_sort'" : "") ?> class="first_str">По умолчанию</a>
-                                            <a href="?<?php echo $sortQuery; ?>&sort=price_asc" <?php echo ($activeSort == 'price_asc' ? " class='active_sort'" : "") ?>>По возрастанию цены</a>
-                                            <a href="?<?php echo $sortQuery; ?>&sort=price_desc" <?php echo ($activeSort == 'price_desc' ? " class='active_sort'" : "") ?>>По убыванию цены</a>
-                                            <a href="?<?php echo $sortQuery; ?>&sort=sale" <?php echo ($activeSort == 'sale' ? " class='last_str active_sort'" : "") ?> class="last_str">Сначала со скидкой</a>
+                                            <a href="?<?php echo $sortQuery; ?>&sort=default"
+                                                <?php echo ($activeSort == 'default' ? " class='first_str active_sort'" : "") ?> class="first_str">По умолчанию</a>
+                                            <a href="?<?php echo $sortQuery; ?>&sort=price_asc"
+                                                <?php echo ($activeSort == 'price_asc' ? " class='active_sort'" : "") ?>>По возрастанию цены</a>
+                                            <a href="?<?php echo $sortQuery; ?>&sort=price_desc"
+                                                <?php echo ($activeSort == 'price_desc' ? " class='active_sort'" : "") ?>>По убыванию цены</a>
+                                            <a href="?<?php echo $sortQuery; ?>&sort=sale"
+                                                <?php echo ($activeSort == 'sale' ? " class='last_str active_sort'" : "") ?> class="last_str">Сначала со скидкой</a>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -234,6 +258,9 @@ $activeSort = $_GET['sort'] ?? 'default';
                         <div class="nav_page"><a href="/adress.php">Наши адреса</a></div>
                         <div class="nav_page"><a href="/about.php">О нас</a></div>
                         <div class="nav_page"><a href="/support.php">Поддержка</a></div>
+                        <?php if (isset($user['id']) && $user['status'] == 'administrator'): ?>
+                        <div class="nav_page"><a href="../admin/adminpanel.php">Панель управления</a></div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="bottom_row">

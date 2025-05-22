@@ -9,6 +9,7 @@ $query_sponsors = "SELECT * FROM sponsors";
 $query_random = "SELECT * FROM products ORDER BY RAND() LIMIT 8";
 $query_new = "SELECT * FROM products ORDER BY id DESC LIMIT 8";
 $query_sale = "SELECT * FROM products WHERE sale IS NOT NULL LIMIT 8";
+$query_blade = "SELECT * FROM products WHERE category_id = 1 AND available > 0 LIMIT 8";
 
 $stmt_main_slider = $pdo->prepare($query_main_slider);
 $stmt_sponsors = $pdo->prepare($query_sponsors);
@@ -16,6 +17,7 @@ $stmt_sponsors = $pdo->prepare($query_sponsors);
 $stmt_random = $pdo->prepare($query_random);
 $stmt_new = $pdo->prepare($query_new);
 $stmt_sale = $pdo->prepare($query_sale);
+$stmt_blade = $pdo->prepare($query_blade);
 
 try {
     $stmt_main_slider->execute();
@@ -24,6 +26,7 @@ try {
     $stmt_random->execute();
     $stmt_new->execute();
     $stmt_sale->execute();
+    $stmt_blade->execute();
 } catch (\PDOException $e) {
     error_log($e->getMessage());
     http_response_code(500);
@@ -37,7 +40,40 @@ $images_sponsors = $stmt_sponsors->fetchAll(PDO::FETCH_ASSOC);
 $products_random = $stmt_random->fetchAll(PDO::FETCH_ASSOC);
 $products_new = $stmt_new->fetchAll(PDO::FETCH_ASSOC);
 $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
+$products_blade = $stmt_blade->fetchAll(PDO::FETCH_ASSOC);
 
+// Вычисление среднего рейтинга для каждого товара
+$randomRatings = [];
+foreach ($products_random as $product) {
+    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
+    $avgRatingStmt->execute([$product['id']]);
+    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
+    $randomRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
+}
+
+$newRatings = [];
+foreach ($products_new as $product) {
+    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
+    $avgRatingStmt->execute([$product['id']]);
+    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
+    $newRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
+}
+
+$saleRatings = [];
+foreach ($products_sale as $product) {
+    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
+    $avgRatingStmt->execute([$product['id']]);
+    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
+    $saleRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
+}
+
+$bladeRatings = [];
+foreach ($products_blade as $product) {
+    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
+    $avgRatingStmt->execute([$product['id']]);
+    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
+    $bladeRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +87,7 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/catalog.css">
     <link rel="stylesheet" href="/css/loader.css">
+    <link rel="stylesheet" href="/css/review.css">
     <script defer src="/js/scroll.js"></script>
     <script defer src="/js/swiper_lib.js"></script>
     <script defer src="/js/swiper.js"></script>
@@ -100,12 +137,26 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                     <a href="/product.php?id=<?php echo $data_random['id'] ?>">
                                         <img class="prod_pic" src="<?php echo $data_random['image']; ?>">
                                         <div class="desc">
-                                            <span class="mnfct"><?php echo $data_random['manufacturer']; ?></span>
                                             <span class="prod_name"><?php echo $data_random['name']; ?></span>
                                         </div>
                                         <div class="price">
                                             <span><?php echo $data_random['price']; ?></span>
                                             <span class="price_sign">₽</span>
+                                        </div>
+                                        <!-- Средний рейтинг в виде ранга -->
+                                        <div class="average-rating">
+                                            <?php
+                                            $averageRating = $randomRatings[$data_random['id']];
+                                            if ($averageRating > 0) {
+                                                $averageRank = getRankFromRating($averageRating);
+                                                echo '<div class="rank-container">';
+                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
+                                                echo '</div>';
+                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
+                                            } else {
+                                                echo "Нет оценок";
+                                            }
+                                            ?>
                                         </div>
                                     </a>
                                     <div class="btns">
@@ -146,12 +197,26 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                     <a href="/product.php?id=<?php echo $data_new['id'] ?>">
                                         <img class="prod_pic" src="<?php echo $data_new['image']; ?>">
                                         <div class="desc">
-                                            <span class="mnfct"><?php echo $data_new['manufacturer']; ?></span>
                                             <span class="prod_name"><?php echo $data_new['name']; ?></span>
                                         </div>
                                         <div class="price">
                                             <span><?php echo $data_new['price']; ?></span>
                                             <span class="price_sign">₽</span>
+                                        </div>
+                                        <!-- Средний рейтинг в виде ранга -->
+                                        <div class="average-rating">
+                                            <?php
+                                            $averageRating = $newRatings[$data_new['id']];
+                                            if ($averageRating > 0) {
+                                                $averageRank = getRankFromRating($averageRating);
+                                                echo '<div class="rank-container">';
+                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
+                                                echo '</div>';
+                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
+                                            } else {
+                                                echo "Нет оценок";
+                                            }
+                                            ?>
                                         </div>
                                     </a>
                                     <div class="btns">
@@ -192,12 +257,26 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                     <a href="/product.php?id=<?php echo $data_sale['id'] ?>">
                                         <img class="prod_pic" src="<?php echo $data_sale['image']; ?>">
                                         <div class="desc">
-                                            <span class="mnfct"><?php echo $data_sale['manufacturer']; ?></span>
                                             <span class="prod_name"><?php echo $data_sale['name']; ?></span>
                                         </div>
                                         <div class="price">
                                             <span><?php echo $data_sale['price']; ?></span>
                                             <span class="price_sign">₽</span>
+                                        </div>
+                                        <!-- Средний рейтинг в виде ранга -->
+                                        <div class="average-rating">
+                                            <?php
+                                            $averageRating = $saleRatings[$data_sale['id']];
+                                            if ($averageRating > 0) {
+                                                $averageRank = getRankFromRating($averageRating);
+                                                echo '<div class="rank-container">';
+                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
+                                                echo '</div>';
+                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
+                                            } else {
+                                                echo "Нет оценок";
+                                            }
+                                            ?>
                                         </div>
                                     </a>
                                     <div class="btns">
@@ -209,6 +288,66 @@ $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
                                         <form action="/vendor/wishlist" method="post">
                                             <input type="hidden" name="productID" value="<?php echo $data_sale['id'] ?>">
                                             <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_sale['id']) ? 'wishlist' : ''); ?>">
+                                                <svg width="30px" height="30px" viewBox="0 0 32 32">
+                                                    <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
+                                                    0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336
+                                                    0.751-0.75v-28c-0-0.414-0.336-0.75-0.75-0.75v0z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="swiper-button-prev prev2"></div>
+                    <div class="swiper-button-next next2"></div>
+                </div>
+            </div>
+             <div class="main_dir">
+                <h1>Клинки</h1>
+                <div class="swiper sw2">
+                    <div class="swiper-wrapper">
+                        <?php foreach ($products_blade as $blade): ?>
+                            <div class="swiper-slide sl2">
+                                <div class="prod">
+                                    <?php if (isset($blade['sale'])): ?>
+                                        <a class="sale">-<?php echo $blade['sale']; ?>%</a>
+                                    <?php endif; ?>
+                                    <a href="/product.php?id=<?php echo $blade['id'] ?>">
+                                        <img class="prod_pic" src="<?php echo $blade['image']; ?>">
+                                        <div class="desc">
+                                            <span class="prod_name"><?php echo $blade['name']; ?></span>
+                                        </div>
+                                        <div class="price">
+                                            <span><?php echo $blade['price']; ?></span>
+                                            <span class="price_sign">₽</span>
+                                        </div>
+                                        <!-- Средний рейтинг в виде ранга -->
+                                        <div class="average-rating">
+                                            <?php
+                                            $averageRating = $randomRatings[$blade['id']];
+                                            if ($averageRating > 0) {
+                                                $averageRank = getRankFromRating($averageRating);
+                                                echo '<div class="rank-container">';
+                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
+                                                echo '</div>';
+                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
+                                            } else {
+                                                echo "Нет оценок";
+                                            }
+                                            ?>
+                                        </div>
+                                    </a>
+                                    <div class="btns">
+                                        <form action="/vendor/cart" method="post">
+                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
+                                            <input type="hidden" name="action" value="active">
+                                            <button type="submit" class="cart_but">В корзину</button>
+                                        </form>
+                                        <form action="/vendor/wishlist" method="post">
+                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
+                                            <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_random['id']) ? 'wishlist' : ''); ?>">
                                                 <svg width="30px" height="30px" viewBox="0 0 32 32">
                                                     <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
                                                     0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336

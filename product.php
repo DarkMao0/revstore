@@ -5,7 +5,9 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/vendor/functions.php';
 
-// Валидация параметра id
+$pdo = getPDO();
+
+// Получение id товара и валидация
 $info = $_GET['id'] ?? null;
 if (!$info || !filter_var($info, FILTER_VALIDATE_INT) || $info <= 0) {
     error_log("Invalid product ID: " . var_export($info, true));
@@ -18,10 +20,11 @@ if (!$info || !filter_var($info, FILTER_VALIDATE_INT) || $info <= 0) {
     die();
 }
 
-$pdo = getPDO();
-$stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+// Получение товара
+$product_query = "SELECT * FROM products WHERE id = ?";
+$product_stmt = $pdo->prepare($product_query);
 try {
-    $stmt->execute([$info]);
+    $product_stmt->execute([$info]);
 } catch (\PDOException $e) {
     error_log("Database error: " . $e->getMessage());
     http_response_code(500);
@@ -32,8 +35,7 @@ try {
     }
     die();
 }
-
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
+$product = $product_stmt->fetch(PDO::FETCH_ASSOC);
 
 if (empty($product)) {
     error_log("Product not found for ID: $info");
@@ -45,16 +47,26 @@ if (empty($product)) {
     }
     die();
 }
-$char = explode(' ', $product['category']);
 
-// Запрос для получения среднего рейтинга
+// Получение фильтров
+$filter_query = "SELECT f.filter_name, fv.value FROM filter_connection fc JOIN filter_values fv ON fc.fvalue_id = fv.id JOIN filters f ON fv.filter_id = f.id WHERE fc.product_id = ? ORDER BY f.filter_name, fv.value";
+$filter_stmt = $pdo->prepare($filter_query);
+try {
+    $filter_stmt->execute([$info]);
+    $filters = $filter_stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (\PDOException $e) {
+    error_log($e->getMessage());
+    $filters = [];
+}
+
+// Получение среднего рейтинга
 $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
 $avgRatingStmt->execute([$info]);
 $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
 $averageRating = $avgRatingResult['average_rating'] ? $avgRatingResult['average_rating'] : 0;
 $averageRank = getRankFromRating($averageRating);
 
-// Запрос для получения отзывов
+// Получение отзывов
 $reviewsStmt = $pdo->prepare("SELECT * FROM reviews WHERE product_id = ? ORDER BY date DESC");
 try {
     $reviewsStmt->execute([$info]);
@@ -64,45 +76,37 @@ try {
     $reviews = [];
 }
 
-$user = authorizedUserData();
-error_log("product.php - User data: " . var_export($user, true));
-if (!$user && strpos($_SERVER['REQUEST_URI'], '/user/') === 0) {
-    error_log("product.php - Redirecting to signin.php for /user/ path");
-    header("Location: /signin.php");
-    exit;
-}
-
 // Получение сообщения из сессии
 $reviewMessage = getAlert('review_message');
 ?>
-
 <!DOCTYPE html>
 <html lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>REVSTORE - <?php echo $product['name']; ?></title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Cerama Granit - <?php echo htmlspecialchars($product['name']); ?></title>
+    <link rel="icon" href="/img/fav.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/product.css">
-    <link rel="stylesheet" href="/css/review.css">   
+    <link rel="stylesheet" href="/css/review.css">
+    <script defer src="js/common.js"></script>
 </head>
 <body>
 <?php include_once __DIR__ . '/components/header.php' ?>
 <main class="content">
     <div class="con">
         <div class="main_dir">
-            <h1 class="prod_name"><?php echo $product['name']; ?></h1>
+            <h1 class="prod_name"><?php echo htmlspecialchars($product['name']); ?></h1>
             <div class="prod_con">
                 <div class="prod_img">
                     <?php if (isset($product['sale'])): ?>
-                        <a class="sale">-<?php echo $product['sale']; ?>%</a>
+                        <a class="sale">-<?php echo htmlspecialchars($product['sale']); ?>%</a>
                     <?php endif; ?>
-                    <img src="<?php echo $product['image']; ?>">
+                    <img src="<?php echo htmlspecialchars($product['image']); ?>">
                 </div>
                 <div class="prod_info">
                     <div class="interact_con">
                         <div class="prod_price">
-                            <a class="price"><?php echo $product['price']; ?></a>
+                            <a class="price"><?php echo number_format($product['price'], 0, '', ' '); ?></a>
                             <a class="price_sign">₽</a>
                         </div>
                         <form action="/vendor/wishlist" method="post">
@@ -115,38 +119,38 @@ $reviewMessage = getAlert('review_message');
                                 </svg>
                             </button>
                         </form>
+                        <?php if ($product['available'] > 0): ?>
                         <form action="/vendor/cart" method="post">
                             <input type="hidden" name="productID" value="<?php echo $product['id']; ?>">
                             <input type="hidden" name="action" value="active">
                             <button type="submit" class="prod_cart">В корзину</button>
                         </form>
+                        <?php else: ?>
+                            <button type="button" class="prod_unavailable" disabled>Нет в наличии</button>
+                        <?php endif; ?>
                     </div>
                     <div class="chars_con">
                         <h3>Характеристики товара</h3>
-                        <div class="char">
-                            <a class="char_name">Тип покрытия:</a>
-                            <a class="prod_char"><?php echo $char[0]; ?></a>
-                        </div>
-                        <div class="char">
-                            <a class="char_name">Форма:</a>
-                            <a class="prod_char"><?php echo $char[1]; ?></a>
-                        </div>
-                        <div class="char">
-                            <a class="char_name">Объёмная поверхность:</a>
-                            <a class="prod_char"><?php echo $char[2]; ?></a>
-                        </div>
-                        <div class="char">
-                            <a class="char_name">Производитель:</a>
-                            <a class="prod_char"><?php echo $char[3]; ?></a>
-                        </div>
+                        <?php if (!empty($filters)): ?>
+                            <?php foreach ($filters as $filter): ?>
+                                <div class="char">
+                                    <a class="char_name"><?php echo htmlspecialchars($filter['filter_name']); ?>:</a>
+                                    <a class="prod_char"><?php echo htmlspecialchars($filter['value']); ?></a>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="char">
+                                <a class="prod_char">Характеристики отсутствуют</a>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="desc_con">
                         <h3>Описание товара</h3>
-                        <a class="prod_desc"><?php echo $product['description']; ?></a>
+                        <a class="prod_desc"><?php echo htmlspecialchars($product['description']); ?></a>
                     </div>
                     <div class="reviews_con">
                         <h3>Отзывы</h3>
-                        <!-- Средний ранг -->
+                        <!-- averank -->
                         <?php if ($averageRating > 0): ?>
                             <div class="average-rating">
                                 <div class="rank-container">
@@ -158,10 +162,10 @@ $reviewMessage = getAlert('review_message');
                         <?php else: ?>
                             <p class="no_reviews">Нет оценок.</p>
                         <?php endif; ?>
-                        <!-- Отображение сообщения -->
+                       <!-- message -->
                         <?php if ($reviewMessage): ?>
                             <div id="message" class="<?php echo strpos($reviewMessage, 'успешно') !== false ? 'success_message' : 'error'; ?>">
-                                <?php echo $reviewMessage; ?>
+                                <?php echo htmlspecialchars($reviewMessage); ?>
                             </div>
                         <?php endif; ?>
                         <?php if (empty($reviews)): ?>
@@ -195,7 +199,7 @@ $reviewMessage = getAlert('review_message');
                                 </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
-                        <!-- Ссылка на страницу добавления отзыва -->
+                        <!-- add review -->
                         <div class="review_form">
                             <h3>Оставить отзыв</h3>
                             <?php if (!$user): ?>
