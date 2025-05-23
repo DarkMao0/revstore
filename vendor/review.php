@@ -10,6 +10,7 @@ error_log("review - Received POST data: " . var_export($_POST, true));
 error_log("review - Request method: " . $_SERVER['REQUEST_METHOD']);
 error_log("review - Request URI: " . $_SERVER['REQUEST_URI']);
 
+$user = authorizedUserData();
 if (!$user) {
     setAlert('review_message', 'Пожалуйста, войдите в аккаунт, чтобы редактировать или удалить отзыв.');
     header("Location: /signin.php");
