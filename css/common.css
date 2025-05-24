@@ -406,6 +406,38 @@ input:-webkit-autofill {
     position: relative;
 }
 
+.quantity_a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: -10px; 
+    right: -8px; 
+    transform: translateX(30%); 
+    width: 24px;
+    height: 24px;
+    color: #E0E0E0;
+    border-radius: 50%; 
+    box-shadow: 0 0 5px rgba(0, 212, 255, 1.25); /* Тень */
+    font-size: 13px; 
+    font-family: "os_medium", sans-serif;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease; 
+    background-color: #2C2C2E; 
+}
+
+.quantity_mark:hover,
+.quantity_a:hover,
+.quantity_mark a:hover,
+.quantity_a a:hover {
+    background-color: #00D4FF;
+    color: #2C2C2E; 
+}
+
+.quantity_mark a,
+.quantity_a a {
+    color: inherit; 
+}
+
 .counter {
     position: absolute;
     background-color: #FF4D4D;
@@ -1219,6 +1251,15 @@ button.wishlist {
 
     .show_button {
         bottom: 15px;
+    }
+
+    .quantity_a {
+        width: 20px;
+        height: 20px;
+        top: -8px;
+        right: -8px;
+        transform: translateX(20%); /* Корректирую смещение для мобильных */
+        font-size: 11px;
     }
 }
 

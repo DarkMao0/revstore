@@ -45,7 +45,6 @@ $searchValue = $_GET['search'] ?? '';
                 content.style.marginTop = `${headerHeight + 10}px`; // +10px запас
             }
         }
-
         // Выполняем корректировку при загрузке страницы и при изменении размера окна
         window.addEventListener('load', adjustContentMargin);
         window.addEventListener('resize', adjustContentMargin);
@@ -91,6 +90,17 @@ $searchValue = $_GET['search'] ?? '';
                         <a href="/" title="На главную"><img class="log" src="/img/svg/logo.svg" alt="Logo"></a>
                         <div class="profile_actions">
                             <div class="header_cart">
+                                 <?php foreach ($total_quantity as $cart_quantity): ?>
+                                <?php if (!empty($cart_quantity['total'])): ?>
+                                    <div class="quantity_mark">
+                                        <a class="quantity_a">
+                                            <?php if ($cart_quantity['total'] >= 100) {
+                                                echo '99+';
+                                            } else echo $cart_quantity['total']; ?>
+                                        </a>
+                                    </div>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                                 <a class="user_pages" href="/user/cart.php">
                                     <svg class="user_pages_image" width="25px" height="25px" viewBox="0 0 510 510">
                                         <path d="M153,408c-28.05,0-51,22.95-51,51s22.95,51,51,51s51-22.95,51-51S181.05,408,153,408z M0,0v51h51l91.8,193.8L107.1,306
