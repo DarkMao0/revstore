@@ -51,14 +51,32 @@ try {
 $filtersData = $filtersStmt->fetchAll(PDO::FETCH_ASSOC);
 $products = $productsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Вычисление среднего рейтинга для каждого товара
-$productRatings = [];
-foreach ($products as $product) {
-    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
-    $avgRatingStmt->execute([$product['product_id']]);
-    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
-    $productRatings[$product['product_id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
+// Получение средних рейтингов для всех товаров одним запросом
+$product_ids = array_column($products, 'product_id');
+$ratings = [];
+if (!empty($product_ids)) {
+    $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
+    $avgRatingStmt = $pdo->prepare("SELECT product_id, AVG(rating) as average_rating FROM reviews WHERE product_id IN ($placeholders) GROUP BY product_id");
+    try {
+        $avgRatingStmt->execute($product_ids);
+        $ratings_result = $avgRatingStmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($ratings_result as $row) {
+            $ratings[$row['product_id']] = [
+                'average_rating' => round(floatval($row['average_rating']), 1),
+                'average_rank' => getRankFromRating(floatval($row['average_rating']))
+            ];
+        }
+    } catch (\PDOException $e) {
+        error_log("Я ОПЯТЬ НАСРАЛ " . $e->getMessage());
+    }
 }
+
+// Привязка рейтингов к товарам
+foreach ($products as &$product) {
+    $product['average_rating'] = isset($ratings[$product['product_id']]) ? $ratings[$product['product_id']]['average_rating'] : 0;
+    $product['average_rank'] = isset($ratings[$product['product_id']]) ? $ratings[$product['product_id']]['average_rank'] : null;
+}
+unset($product);
 
 foreach ($filtersData as $filter) {
     $name = $filter['filter_name'];
@@ -96,14 +114,14 @@ $activeSort = $_GET['sort'] ?? 'default';
                     <div class="fil_field">
                         <h3 class="name">Фильтры</h3>
                         <form class="filter_content" method="get">
-                            <input type="hidden" name="id" value="<?php echo $categoryId; ?>">
+                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($categoryId); ?>">
                             <?php if (isset($_GET['search'])): ?>
                                 <input type="hidden" name="search" value="<?php echo htmlspecialchars($_GET['search']); ?>">
                             <?php endif; ?>
                             <?php foreach ($groupedFilters as $filterName => $filterData): ?>
                                 <div class="filter_box">
                                     <div class="open_list">
-                                        <a><?php echo $filterName; ?></a>
+                                        <a><?php echo htmlspecialchars($filterName); ?></a>
                                     </div>
                                     <div class="filter">
                                         <?php foreach ($filterData['values'] as $value): ?>
@@ -117,7 +135,7 @@ $activeSort = $_GET['sort'] ?? 'default';
                                                     <?php if (isset($_GET['filter'][$filterData['filter_id']]) && in_array($value['id'], $_GET['filter'][$filterData['filter_id']])) echo 'checked'; ?>
                                                 >
                                                 <label class="checkbox_label" for="cb_<?php echo $value['id']; ?>">
-                                                    <?php echo $value['value']; ?>
+                                                    <?php echo htmlspecialchars($value['value']); ?>
                                                 </label>
                                             </div>
                                         <?php endforeach; ?>
@@ -125,7 +143,7 @@ $activeSort = $_GET['sort'] ?? 'default';
                                 </div>
                             <?php endforeach; ?>
                             <?php if (isset($_GET['sort'])): ?>
-                                <input type="hidden" name="sort" value="<?php echo $_GET['sort'] ?>">
+                                <input type="hidden" name="sort" value="<?php echo htmlspecialchars($_GET['sort']); ?>">
                             <?php endif; ?>
                             <button type="submit" id="filter_submit" class="filter_submit">Применить фильтры</button>
                         </form>

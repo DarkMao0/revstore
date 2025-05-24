@@ -13,7 +13,6 @@ $query_blade = "SELECT * FROM products WHERE category_id = 1 AND available > 0 L
 
 $stmt_main_slider = $pdo->prepare($query_main_slider);
 $stmt_sponsors = $pdo->prepare($query_sponsors);
-
 $stmt_random = $pdo->prepare($query_random);
 $stmt_new = $pdo->prepare($query_new);
 $stmt_sale = $pdo->prepare($query_sale);
@@ -22,7 +21,6 @@ $stmt_blade = $pdo->prepare($query_blade);
 try {
     $stmt_main_slider->execute();
     $stmt_sponsors->execute();
-
     $stmt_random->execute();
     $stmt_new->execute();
     $stmt_sale->execute();
@@ -36,43 +34,45 @@ try {
 
 $images_main_slider = $stmt_main_slider->fetchAll(PDO::FETCH_ASSOC);
 $images_sponsors = $stmt_sponsors->fetchAll(PDO::FETCH_ASSOC);
-
 $products_random = $stmt_random->fetchAll(PDO::FETCH_ASSOC);
 $products_new = $stmt_new->fetchAll(PDO::FETCH_ASSOC);
 $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
 $products_blade = $stmt_blade->fetchAll(PDO::FETCH_ASSOC);
 
-// Вычисление среднего рейтинга для каждого товара
-$randomRatings = [];
-foreach ($products_random as $product) {
-    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
-    $avgRatingStmt->execute([$product['id']]);
-    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
-    $randomRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
-}
+// Получение средних рейтингов для всех товаров одним запросом
+$product_ids = array_merge(
+    array_column($products_random, 'id'),
+    array_column($products_new, 'id'),
+    array_column($products_sale, 'id'),
+    array_column($products_blade, 'id')
+);
+$product_ids = array_unique($product_ids);
 
-$newRatings = [];
-foreach ($products_new as $product) {
-    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
-    $avgRatingStmt->execute([$product['id']]);
-    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
-    $newRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
+$ratings = [];
+if (!empty($product_ids)) {
+    $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
+    $avgRatingStmt = $pdo->prepare("SELECT product_id, AVG(rating) as average_rating FROM reviews WHERE product_id IN ($placeholders) GROUP BY product_id");
+    try {
+        $avgRatingStmt->execute($product_ids);
+        $ratings_result = $avgRatingStmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($ratings_result as $row) {
+            $ratings[$row['product_id']] = [
+                'average_rating' => round(floatval($row['average_rating']), 1),
+                'average_rank' => getRankFromRating(floatval($row['average_rating']))
+            ];
+        }
+    } catch (\PDOException $e) {
+        error_log("Я ОПЯТЬ НАСРАЛ " . $e->getMessage());
+    }
 }
-
-$saleRatings = [];
-foreach ($products_sale as $product) {
-    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
-    $avgRatingStmt->execute([$product['id']]);
-    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
-    $saleRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
-}
-
-$bladeRatings = [];
-foreach ($products_blade as $product) {
-    $avgRatingStmt = $pdo->prepare("SELECT AVG(rating) as average_rating FROM reviews WHERE product_id = ?");
-    $avgRatingStmt->execute([$product['id']]);
-    $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
-    $bladeRatings[$product['id']] = $avgRatingResult['average_rating'] ? round($avgRatingResult['average_rating'], 1) : 0;
+foreach (['products_random', 'products_new', 'products_sale', 'products_blade'] as $section) {
+    foreach ($$section as &$product) {
+        $product['average_rating'] = isset($ratings[$product['id']]) ? $ratings[$product['id']]['average_rating'] : 0;
+        $product['average_rank'] = isset($ratings[$product['id']]) ? $ratings[$product['id']]['average_rank'] : null;
+        $product['product_id'] = $product['id'];
+        $product['product_name'] = $product['name'];
+    }
+    unset($product);
 }
 ?>
 
@@ -115,8 +115,8 @@ foreach ($products_blade as $product) {
                     <div class="swiper-wrapper">
                         <?php foreach ($images_main_slider as $data_main_slider): ?>
                             <div class="swiper-slide sl1">
-                                <a href="<?php echo $data_main_slider['link']; ?>">
-                                    <img src="<?php echo $data_main_slider['image']; ?>">
+                                <a href="<?php echo htmlspecialchars($data_main_slider['link']); ?>">
+                                    <img src="<?php echo htmlspecialchars($data_main_slider['image']); ?>">
                                 </a>
                             </div>
                         <?php endforeach; ?>
@@ -128,55 +128,9 @@ foreach ($products_blade as $product) {
                 <h1>Случайные предложения</h1>
                 <div class="swiper sw2">
                     <div class="swiper-wrapper">
-                        <?php foreach ($products_random as $data_random): ?>
+                        <?php foreach ($products_random as $product): ?>
                             <div class="swiper-slide sl2">
-                                <div class="prod">
-                                    <?php if (isset($data_random['sale'])): ?>
-                                        <a class="sale">-<?php echo $data_random['sale']; ?>%</a>
-                                    <?php endif; ?>
-                                    <a href="/product.php?id=<?php echo $data_random['id'] ?>">
-                                        <img class="prod_pic" src="<?php echo $data_random['image']; ?>">
-                                        <div class="desc">
-                                            <span class="prod_name"><?php echo $data_random['name']; ?></span>
-                                        </div>
-                                        <div class="card_price">
-                                        <span class="price"><?php echo $data_random['price']; ?></span>
-                                        <span class="price_sign">₽</span>
-                                        </div>
-                                        <!-- Средний рейтинг в виде ранга -->
-                                        <div class="average-rating">
-                                            <?php
-                                            $averageRating = $randomRatings[$data_random['id']];
-                                            if ($averageRating > 0) {
-                                                $averageRank = getRankFromRating($averageRating);
-                                                echo '<div class="rank-container">';
-                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
-                                                echo '</div>';
-                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
-                                            } else {
-                                                echo "Нет оценок";
-                                            }
-                                            ?>
-                                        </div>
-                                    </a>
-                                    <div class="btns">
-                                        <form action="/vendor/cart" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
-                                            <input type="hidden" name="action" value="active">
-                                            <button type="submit" class="cart_but">В корзину</button>
-                                        </form>
-                                        <form action="/vendor/wishlist" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
-                                            <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_random['id']) ? 'wishlist' : ''); ?>">
-                                                <svg width="30px" height="30px" viewBox="0 0 32 32">
-                                                    <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
-                                                    0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336
-                                                    0.751-0.75v-28c-0-0.414-0.336-0.75-0.75-0.75v0z"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <?php include __DIR__ . '/components/product.php' ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -184,59 +138,13 @@ foreach ($products_blade as $product) {
                     <div class="swiper-button-next next2"></div>
                 </div>
             </div>
-             <div class="main_dir">
+            <div class="main_dir">
                 <h1>Клинки</h1>
                 <div class="swiper sw2">
                     <div class="swiper-wrapper">
-                        <?php foreach ($products_blade as $blade): ?>
+                        <?php foreach ($products_blade as $product): ?>
                             <div class="swiper-slide sl2">
-                                <div class="prod">
-                                    <?php if (isset($blade['sale'])): ?>
-                                        <a class="sale">-<?php echo $blade['sale']; ?>%</a>
-                                    <?php endif; ?>
-                                    <a href="/product.php?id=<?php echo $blade['id'] ?>">
-                                        <img class="prod_pic" src="<?php echo $blade['image']; ?>">
-                                        <div class="desc">
-                                            <span class="prod_name"><?php echo $blade['name']; ?></span>
-                                        </div>
-                                        <div class="card_price">
-                                            <span class="price"><?php echo $blade['price']; ?></span>
-                                            <span class="price_sign">₽</span>
-                                        </div>
-                                        <!-- Средний рейтинг в виде ранга -->
-                                        <div class="average-rating">
-                                            <?php
-                                            $averageRating = $randomRatings[$blade['id']];
-                                            if ($averageRating > 0) {
-                                                $averageRank = getRankFromRating($averageRating);
-                                                echo '<div class="rank-container">';
-                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
-                                                echo '</div>';
-                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
-                                            } else {
-                                                echo "Нет оценок";
-                                            }
-                                            ?>
-                                        </div>
-                                    </a>
-                                    <div class="btns">
-                                        <form action="/vendor/cart" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
-                                            <input type="hidden" name="action" value="active">
-                                            <button type="submit" class="cart_but">В корзину</button>
-                                        </form>
-                                        <form action="/vendor/wishlist" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_random['id'] ?>">
-                                            <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_random['id']) ? 'wishlist' : ''); ?>">
-                                                <svg width="30px" height="30px" viewBox="0 0 32 32">
-                                                    <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
-                                                    0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336
-                                                    0.751-0.75v-28c-0-0.414-0.336-0.75-0.75-0.75v0z"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <?php include __DIR__ . '/components/product.php' ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -248,55 +156,9 @@ foreach ($products_blade as $product) {
                 <h1>Новинки</h1>
                 <div class="swiper sw2">
                     <div class="swiper-wrapper">
-                        <?php foreach ($products_new as $data_new): ?>
+                        <?php foreach ($products_new as $product): ?>
                             <div class="swiper-slide sl2">
-                                <div class="prod">
-                                    <?php if (isset($data_new['sale'])): ?>
-                                        <a class="sale">-<?php echo $data_new['sale']; ?>%</a>
-                                    <?php endif; ?>
-                                    <a href="/product.php?id=<?php echo $data_new['id'] ?>">
-                                        <img class="prod_pic" src="<?php echo $data_new['image']; ?>">
-                                        <div class="desc">
-                                            <span class="prod_name"><?php echo $data_new['name']; ?></span>
-                                        </div>
-                                        <div class="card_price">
-                                            <span class="price"><?php echo $data_new['price']; ?></span>
-                                            <span class="price_sign">₽</span>
-                                        </div>
-                                        <!-- Средний рейтинг в виде ранга -->
-                                        <div class="average-rating">
-                                            <?php
-                                            $averageRating = $newRatings[$data_new['id']];
-                                            if ($averageRating > 0) {
-                                                $averageRank = getRankFromRating($averageRating);
-                                                echo '<div class="rank-container">';
-                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
-                                                echo '</div>';
-                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
-                                            } else {
-                                                echo "Нет оценок";
-                                            }
-                                            ?>
-                                        </div>
-                                    </a>
-                                    <div class="btns">
-                                        <form action="/vendor/cart" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_new['id'] ?>">
-                                            <input type="hidden" name="action" value="active">
-                                            <button type="submit" class="cart_but">В корзину</button>
-                                        </form>
-                                        <form action="/vendor/wishlist" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_new['id'] ?>">
-                                            <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_new['id']) ? 'wishlist' : ''); ?>">
-                                                <svg width="30px" height="30px" viewBox="0 0 32 32">
-                                                    <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
-                                                    0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336
-                                                    0.751-0.75v-28c-0-0.414-0.336-0.75-0.75-0.75v0z"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <?php include __DIR__ . '/components/product.php' ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -308,55 +170,9 @@ foreach ($products_blade as $product) {
                 <h1>Скидки</h1>
                 <div class="swiper sw2">
                     <div class="swiper-wrapper">
-                        <?php foreach ($products_sale as $data_sale): ?>
+                        <?php foreach ($products_sale as $product): ?>
                             <div class="swiper-slide sl2">
-                                <div class="prod">
-                                    <?php if (isset($data_sale['sale'])): ?>
-                                        <a class="sale">-<?php echo $data_sale['sale']; ?>%</a>
-                                    <?php endif; ?>
-                                    <a href="/product.php?id=<?php echo $data_sale['id'] ?>">
-                                        <img class="prod_pic" src="<?php echo $data_sale['image']; ?>">
-                                        <div class="desc">
-                                            <span class="prod_name"><?php echo $data_sale['name']; ?></span>
-                                        </div>
-                                        <div class="card_price">
-                                           <span class="price"><?php echo $data_sale['price']; ?></span>
-                                            <span class="price_sign">₽</span>
-                                        </div>
-                                        <!-- Средний рейтинг в виде ранга -->
-                                        <div class="average-rating">
-                                            <?php
-                                            $averageRating = $saleRatings[$data_sale['id']];
-                                            if ($averageRating > 0) {
-                                                $averageRank = getRankFromRating($averageRating);
-                                                echo '<div class="rank-container">';
-                                                echo '<p class="rank-text">RANK:</p> <span class="rank rank-' . $averageRank . '">' . $averageRank . '</span>';
-                                                echo '</div>';
-                                                echo '<span class="rating-value">(' . number_format($averageRating, 1) . '/5)</span>';
-                                            } else {
-                                                echo "Нет оценок";
-                                            }
-                                            ?>
-                                        </div>
-                                    </a>
-                                    <div class="btns">
-                                        <form action="/vendor/cart" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_sale['id'] ?>">
-                                            <input type="hidden" name="action" value="active">
-                                            <button type="submit" class="cart_but">В корзину</button>
-                                        </form>
-                                        <form action="/vendor/wishlist" method="post">
-                                            <input type="hidden" name="productID" value="<?php echo $data_sale['id'] ?>">
-                                            <button type="submit" name="action" value="active" class="fav_but <?php echo (checkWishlist($data_sale['id']) ? 'wishlist' : ''); ?>">
-                                                <svg width="30px" height="30px" viewBox="0 0 32 32">
-                                                    <path d="M26 1.25h-20c-0.414 0-0.75 0.336-0.75 0.75v0 28.178c0 0 0 0 0 0.001 0 0.414 0.336 0.749 0.749 0.749 0.181
-                                                    0 0.347-0.064 0.476-0.171l-0.001 0.001 9.53-7.793 9.526 7.621c0.127 0.102 0.29 0.164 0.468 0.164 0.414 0 0.75-0.336
-                                                    0.751-0.75v-28c-0-0.414-0.336-0.75-0.75-0.75v0z"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                                <?php include __DIR__ . '/components/product.php' ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -368,14 +184,14 @@ foreach ($products_blade as $product) {
                 <h1>Наши партнеры</h1>
                 <div class="brands">
                     <?php foreach ($images_sponsors as $data_sponsors): ?>
-                        <a href="<?php echo $data_sponsors['link']; ?>">
-                            <img src="<?php echo $data_sponsors['image']; ?>">
+                        <a href="<?php echo htmlspecialchars($data_sponsors['link']); ?>">
+                            <img src="<?php echo htmlspecialchars($data_sponsors['image']); ?>">
                         </a>
                     <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
-    <?php include_once __DIR__ . '/components/footer.php' ?>
-</body>
+        </main>
+        <?php include_once __DIR__ . '/components/footer.php' ?>
+    </body>
 </html>
