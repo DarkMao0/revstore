@@ -1,3 +1,108 @@
+/* /css/support.css */
+.sup {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    color: #E0E0E0;
+}
+
+.sup_desc {
+    flex: 1;
+}
+.sup_desc p {
+    font-family: "os_medium", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    color: #B0B0B0; /* Цвет текста для лучшей читаемости */
+}
+.sup_desc h1 {
+    font-family: "os_bold", sans-serif;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.reasons {
+    list-style: none;
+    padding: 0;
+}
+
+.reasons li {
+    font-family: "os_medium", sans-serif;
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.reasons li::before {
+    content: "⚔️"; /* Иконка меча для стилизации */
+    position: absolute;
+    left: 0;
+    color: #00D4FF;
+}
+
+.tel_ban {
+    flex: 1;
+    text-align: center;
+    background-color: #2C2C2E;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgb(0, 204, 255);
+}
+
+.tel_ban img {
+    max-width: 100px;
+    margin-bottom: 15px;
+}
+
+.tel_ban h3 {
+    font-family: "os_bold", sans-serif;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.call {
+    font-family: "os_medium", sans-serif;
+    font-size: 20px;
+    color: #00D4FF;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.call:hover {
+    color: #FFD700;
+    text-decoration: underline;
+}
+
+.work_hours {
+    margin-top: 15px;
+}
+
+.work_hours h4 {
+    font-family: "os_bold", sans-serif;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.work_hours p {
+    font-family: "os_medium", sans-serif;
+    font-size: 14px;
+    margin: 0;
+}
+
+.additional_support {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.additional_support h2 {
+    font-family: "os_bold", sans-serif;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
 .support_con {
     display: flex;
     flex-direction: column;
@@ -9,106 +114,113 @@
     color: #E0E0E0;
 }
 
-.sup_field {
-    padding: 10px;
-    width: 100%;
-    max-width: 350px;
-    height: 32px;
-    border-radius: 5px;
-    border: 1px solid #A0A0A0;
-    background-color: #2C2C2E;
-    color: #E0E0E0;
-    transition: 0.3s all;
+.support_con a.link {
+    color: #00D4FF;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
-.sup_field:hover {
-    border-color: #00D4FF;
-    transition: 0.3s all;
+.support_con a.link:hover {
+    color: #FFD700;
+    text-decoration: underline;
 }
 
-.sup_field:focus {
-    outline: none;
-    border-color: #00D4FF;
+.support_tip {
+    background: #2C2C2E;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgb(0, 204, 255);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.sup_text {
-    padding: 10px;
-    width: 100%;
-    max-width: 350px;
-    height: 100px;
-    border-radius: 5px;
-    border: 1px solid #A0A0A0;
-    background-color: #2C2C2E;
-    color: #E0E0E0;
-    resize: none;
-    transition: 0.3s all;
+.support_tip h3 {
+    font-family: "os_bold", sans-serif;
+    font-size: 20px;
+    margin-bottom: 10px;
 }
 
-.sup_text:hover {
-    border-color: #00D4FF;
-    transition: 0.3s all;
+.support_tip p {
+    font-family: "os_medium", sans-serif;
+    font-size: 14px;
+    margin: 0;
 }
 
-.sup_text:focus {
-    outline: none;
-    border-color: #00D4FF;
-}
-
-.sup_but {
-    cursor: pointer;
-    width: fit-content;
-    padding: 6px 18px;
-    border-radius: 5px;
-    border: none;
-    font-family: os_medium, sans-serif;
-    color: #2C2C2E;
-    background-color: #00D4FF;
-    transition: 0.3s all;
-}
-
-.sup_but:hover {
-    background-color: #00A3CC;
-    transition: 0.3s all;
-}
-
-.sup_but:active {
-    filter: brightness(120%);
+.nano_quote {
+    font-family: "os_bold", sans-serif;
+    font-size: 14px;
+    color: #00D4FF;
+    margin-top: 10px;
+    font-style: italic;
 }
 
 @media (width <= 1024px) {
+    .sup {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .tel_ban,
+    .additional_support {
+        margin: 0 auto;
+    }
+
+    .tel_ban {
+        margin-bottom: 30px; /* Добавляем расстояние между .tel_ban и следующим блоком */
+    }
+
+    .support_tip {
+        margin-top: 20px; /* Увеличиваем расстояние сверху для .support_tip */
+    }
+
     .support_con {
         max-width: 500px;
         padding: 0 15px;
     }
-    .sup_field, .sup_text {
-        max-width: 300px;
-    }
 }
 
 @media (width <= 768px) {
+    .sup_desc h1 {
+        font-size: 28px;
+    }
+
+    .tel_ban h3 {
+        font-size: 20px;
+    }
+
+    .call {
+        font-size: 18px;
+    }
+
+    .additional_support h2 {
+        font-size: 24px;
+    }
+
     .support_con {
         max-width: 400px;
-    }
-    .sup_field, .sup_text {
-        max-width: 250px;
-    }
-    .sup_but {
-        padding: 5px 15px;
-        font-size: 14px;
     }
 }
 
 @media (width <= 480px) {
+    .sup_desc h1 {
+        font-size: 24px;
+    }
+
+    .tel_ban h3 {
+        font-size: 18px;
+    }
+
+    .call {
+        font-size: 16px;
+    }
+
+    .additional_support h2 {
+        font-size: 20px;
+    }
+
     .support_con {
         max-width: 300px;
         gap: 15px;
-    }
-    .sup_field, .sup_text {
-        max-width: 200px;
-    }
-    .sup_but {
-        padding: 4px 12px;
-        font-size: 12px;
     }
 }
 
@@ -116,12 +228,5 @@
     .support_con {
         max-width: 250px;
         padding: 0 5px;
-    }
-    .sup_field, .sup_text {
-        max-width: 180px;
-    }
-    .sup_but {
-        padding: 3px 10px;
-        font-size: 10px;
     }
 }

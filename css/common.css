@@ -590,8 +590,8 @@ input:-webkit-autofill {
     filter: brightness(120%);
 }
 
-.visa {
-    width: 70px;
+.ton {
+    width: 50px;
 }
 
 .mc {
@@ -766,11 +766,11 @@ button.wishlist {
         gap: 25px;
     }
 
-    .visa,
+    .ton,
     .mc,
     .mir,
     .sbp {
-        width: 60px;
+        width: 50px;
     }
 
     .company a {
@@ -1039,11 +1039,11 @@ button.wishlist {
         justify-content: center;
     }
 
-    .visa,
+    .ton,
     .mc,
     .mir,
     .sbp {
-        width: 50px;
+        width: 40px;
     }
 
     .company a {
@@ -1225,11 +1225,11 @@ button.wishlist {
         gap: 15px;
     }
 
-    .visa,
+    .ton,
     .mc,
     .mir,
     .sbp {
-        width: 40px;
+        width: 30px;
     }
 
     .company {
