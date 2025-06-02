@@ -3,7 +3,7 @@
         <div class="sub">
             <h3>Подпишитесь на наши новости</h3>
             <div class="spam_con">
-                <form id="spam_form" class="spam" action="/vendor/spam" method="post" novalidate autocomplete="off">
+                <form id="spam_form" class="spam" action="/control/spam" method="post" novalidate autocomplete="off">
                     <input
                         type="email"
                         name="email"

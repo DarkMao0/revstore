@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/vendor/functions.php';
+require_once __DIR__ . '/control/functions.php';
 
 $pdo = getPDO();
 
@@ -66,8 +66,8 @@ $avgRatingResult = $avgRatingStmt->fetch(PDO::FETCH_ASSOC);
 $averageRating = $avgRatingResult['average_rating'] ? $avgRatingResult['average_rating'] : 0;
 $averageRank = getRankFromRating($averageRating);
 
-// Получение отзывов
-$reviewsStmt = $pdo->prepare("SELECT * FROM reviews WHERE product_id = ? ORDER BY date DESC");
+// Получение последних 3 отзывов
+$reviewsStmt = $pdo->prepare("SELECT * FROM reviews WHERE product_id = ? ORDER BY date DESC LIMIT 3");
 try {
     $reviewsStmt->execute([$info]);
     $reviews = $reviewsStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -75,6 +75,11 @@ try {
     error_log("Failed to fetch reviews: " . $e->getMessage());
     $reviews = [];
 }
+
+// Подсчёт общего количества отзывов для ссылки "Показать все"
+$totalReviewsStmt = $pdo->prepare("SELECT COUNT(*) as total FROM reviews WHERE product_id = ?");
+$totalReviewsStmt->execute([$info]);
+$totalReviews = $totalReviewsStmt->fetch(PDO::FETCH_ASSOC)['total'];
 
 // Получение сообщения из сессии
 $reviewMessage = getAlert('review_message');
@@ -88,7 +93,8 @@ $reviewMessage = getAlert('review_message');
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/product.css">
     <link rel="stylesheet" href="/css/review.css">
-    <script defer src="js/common.js"></script>
+    <script defer src="/js/common.js"></script>
+    <script defer src="/js/modal.js"></script>
 </head>
 <body>
 <?php include_once __DIR__ . '/components/header.php' ?>
@@ -109,7 +115,7 @@ $reviewMessage = getAlert('review_message');
                             <a class="price"><?php echo number_format($product['price'], 0, '', ' '); ?></a>
                             <a class="price_sign">₽</a>
                         </div>
-                        <form action="/vendor/wishlist" method="post">
+                        <form action="/control/wishlist" method="post">
                             <input type="hidden" name="productID" value="<?php echo $product['id']; ?>">
                             <button type="submit" name="action" value="active" class="prod_fav <?php echo (checkWishlist($product['id']) ? 'wishlist' : ''); ?>">
                                 <svg width="30px" height="30px" viewBox="0 0 32 32">
@@ -120,7 +126,7 @@ $reviewMessage = getAlert('review_message');
                             </button>
                         </form>
                         <?php if ($product['available'] > 0): ?>
-                        <form action="/vendor/cart" method="post">
+                        <form action="/control/cart" method="post">
                             <input type="hidden" name="productID" value="<?php echo $product['id']; ?>">
                             <input type="hidden" name="action" value="active">
                             <button type="submit" class="prod_cart">В корзину</button>
@@ -150,7 +156,7 @@ $reviewMessage = getAlert('review_message');
                     </div>
                     <div class="reviews_con">
                         <h3>Отзывы</h3>
-                        <!-- averank -->
+                        <!-- Средний рейтинг -->
                         <?php if ($averageRating > 0): ?>
                             <div class="average-rating">
                                 <div class="rank-container">
@@ -162,12 +168,13 @@ $reviewMessage = getAlert('review_message');
                         <?php else: ?>
                             <p class="no_reviews">Нет оценок.</p>
                         <?php endif; ?>
-                       <!-- message -->
+                        <!-- Сообщение -->
                         <?php if ($reviewMessage): ?>
                             <div id="message" class="<?php echo strpos($reviewMessage, 'успешно') !== false ? 'success_message' : 'error'; ?>">
                                 <?php echo htmlspecialchars($reviewMessage); ?>
                             </div>
                         <?php endif; ?>
+                        <!-- Показ последних 3 отзывов -->
                         <?php if (empty($reviews)): ?>
                             <p class="no_reviews">Пока нет отзывов. Будьте первым, кто оставит отзыв!</p>
                         <?php else: ?>
@@ -185,9 +192,24 @@ $reviewMessage = getAlert('review_message');
                                         </span>
                                     </div>
                                     <p class="review_comment"><?php echo htmlspecialchars($review['comment']); ?></p>
+                                    <!-- Изображения отзыва -->
+                                    <?php
+                                    $imageStmt = $pdo->prepare("SELECT image_path FROM review_images WHERE review_id = ?");
+                                    $imageStmt->execute([$review['id']]);
+                                    $images = $imageStmt->fetchAll(PDO::FETCH_ASSOC);
+                                    ?>
+                                    <?php if ($images): ?>
+                                        <div class="review-images">
+                                            <?php foreach ($images as $image): ?>
+                                                <img src="<?php echo htmlspecialchars($image['image_path']); ?>" alt="Фото отзыва" class="review-image">
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <p class="no-images">Нет изображений для этого отзыва.</p>
+                                    <?php endif; ?>
                                     <?php if ($user && $review['user_id'] == $user['id']): ?>
                                         <div class="review-actions">
-                                            <form method="post" action="/vendor/review" class="delete-review-form">
+                                            <form action="/control/review" method="post" enctype="multipart/form-data">
                                                 <input type="hidden" name="action" value="delete">
                                                 <input type="hidden" name="review_id" value="<?php echo $review['id']; ?>">
                                                 <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
@@ -198,12 +220,16 @@ $reviewMessage = getAlert('review_message');
                                     <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
+                            <!-- Ссылка на все отзывы -->
+                            <?php if ($totalReviews > 3): ?>
+                                <a href="/reviews-view.php?product_id=<?php echo $product['id']; ?>" class="all_reviews_link">Показать все отзывы (<?php echo $totalReviews; ?>)</a>
+                            <?php endif; ?>
                         <?php endif; ?>
-                        <!-- add review -->
+                        <!-- Форма добавления отзыва -->
                         <div class="review_form">
                             <h3>Оставить отзыв</h3>
                             <?php if (!$user): ?>
-                                <p class="auth_message">Пожалуйста, <a href="/signin.php">войдите</a> в аккаунт, чтобы оставить отзыв.</p>
+                                <p class="auth_message">Пожалуйста, <a href="/signin-view.php">войдите</a> в аккаунт, чтобы оставить отзыв.</p>
                             <?php else: ?>
                                 <a href="/user/add-review-view.php?product_id=<?php echo $product['id']; ?>" class="add_review_link">Добавить отзыв</a>
                             <?php endif; ?>
@@ -211,6 +237,13 @@ $reviewMessage = getAlert('review_message');
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Модальное окно для полноразмерного изображения -->
+    <div id="imageModal" class="modal">
+        <span class="close">×</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Полноразмерное изображение">
         </div>
     </div>
 </main>

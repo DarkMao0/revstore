@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/vendor/functions.php';
+require_once __DIR__ . '/control/functions.php';
 denyUser();
 ?>
 
@@ -22,7 +22,7 @@ denyUser();
 		<div class="con">
 			<div class="main_dir">
 				<div class="form_con">
-					<form class="sign_up" action="/vendor/signup" method="post" enctype="multipart/form-data" novalidate>
+					<form class="sign_up" action="/control/signup" method="post" enctype="multipart/form-data" novalidate>
 						<h1>Регистрация</h1>
 						<div class="avatar">
 							<div class="img_container">
@@ -95,7 +95,7 @@ denyUser();
        						<?php endif; ?>
 						</div>
 						<button class="sup_but" type="submit">Зарегестрироваться</button>
-                        <a class="link_to" href="/signin.php">Уже есть профиль?</a>
+                        <a class="link_to" href="/signin-view.php">Уже есть профиль?</a>
 					</form>
 				</div>
 			</div>

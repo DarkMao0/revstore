@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/vendor/functions.php';
+require_once __DIR__ . '/control/functions.php';
 
 $pdo = getPDO();
 $search = trim($_GET['search'] ?? '');
@@ -19,7 +19,7 @@ try {
     $stmt->execute(['search' => $params]);
 }
 catch (\PDOException $e) {
-    error_log('SQL Error in search.php: ' . $e->getMessage());
+    error_log('SQL Error in search-view.php: ' . $e->getMessage());
     http_response_code(500);
     require 'errors/500.php';
     die();

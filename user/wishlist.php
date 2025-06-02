@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 denyNoUser();
 
 $pdo = getPDO();

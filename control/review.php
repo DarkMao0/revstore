@@ -7,6 +7,7 @@ require_once __DIR__ . '/functions.php';
 
 // Логирование для отладки
 error_log("review - Received POST data: " . var_export($_POST, true));
+error_log("review - Received FILES data: " . var_export($_FILES, true));
 error_log("review - Request method: " . $_SERVER['REQUEST_METHOD']);
 error_log("review - Request URI: " . $_SERVER['REQUEST_URI']);
 
@@ -32,6 +33,15 @@ if (!$review_id || !$product_id) {
 if ($action === 'update') {
     $rating = filter_input(INPUT_POST, 'rating', FILTER_VALIDATE_INT);
     $comment = trim(filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_SPECIAL_CHARS));
+    $images = $_FILES['images'] ?? [];
+
+    // Проверка количества изображений (до 3)
+    if (!empty($images['tmp_name']) && count(array_filter((array)$images['tmp_name'])) > 3) {
+        setAlert('review_message', 'Ошибка: Можно загрузить не более 3 изображений');
+        $redirectUrl = getProductUrl($product_id);
+        header("Location: $redirectUrl");
+        exit;
+    }
 
     if ($rating === null || $rating < 1 || $rating > 5) {
         setAlert('review_message', 'Рейтинг должен быть от 1 до 5.');
@@ -47,7 +57,7 @@ if ($action === 'update') {
         exit;
     }
 
-    $response = updateReview($review_id, $rating, $comment, $user);
+    $response = updateReview($review_id, $rating, $comment, $user, $images);
     setAlert('review_message', $response['message']);
     error_log("review - Update review response: " . var_export($response, true));
 } elseif ($action === 'delete') {
@@ -64,4 +74,3 @@ $redirectUrl = getProductUrl($product_id);
 error_log("review - Redirecting to: $redirectUrl");
 header("Location: $redirectUrl");
 exit;
-?>

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 $user = authorizedUserData();
 $user_id = $_SESSION['user']['id'] ?? null;
 
@@ -42,7 +42,7 @@ $searchValue = $_GET['search'] ?? '';
             const content = document.querySelector('.content');
             if (header && content) {
                 const headerHeight = header.offsetHeight;
-                content.style.marginTop = `${headerHeight + 10}px`; // +10px запас
+                content.style.marginTop = `${headerHeight + 2}px`; // +10px запас
             }
         }
         // Выполняем корректировку при загрузке страницы и при изменении размера окна
@@ -123,11 +123,11 @@ $searchValue = $_GET['search'] ?? '';
                             </div>
                             <div class="prof">
                                 <?php if (isset($user['id']) && isset($user['avatar'])): ?>
-                                    <a class="user_pages" href="/signin.php">
+                                    <a class="user_pages" href="/signin-view.php">
                                         <img class="header_avatar" src="<?php echo $user['avatar']; ?>" title="Профиль">
                                     </a>
                                 <?php elseif (!isset($user['avatar']) && isset($user['id'])): ?>
-                                    <a class="user_pages" href="/signin.php">
+                                    <a class="user_pages" href="/signin-view.php">
                                         <svg class="user_pages_image" width="25px" height="25px" viewBox="0 0 40 40">
                                         <path d="M20,0c-1.4,0-2.7,0.2-4,0.7c-1.2,0.5-2.3,1.2-3.2,2v0l0,0c-0.9,0.9-1.6,2-2,3.2C10.3,7.2,10,8.6,10,10c0,1.4,0.2,2.8,0.7,4
                                             c0.5,1.2,1.2,2.3,2,3.2l0,0c0.9,0.9,2,1.6,3.2,2.1v0c1.2,0.5,2.6,0.7,4,0.7c1.4,0,2.7-0.2,4-0.7v0c1.2-0.5,2.3-1.2,3.2-2.1
@@ -138,7 +138,7 @@ $searchValue = $_GET['search'] ?? '';
                                         <span class="user_pages_title">Профиль</span>
                                     </a>
                                 <?php else: ?>
-                                    <a class="user_pages" href="/signin.php">
+                                    <a class="user_pages" href="/signin-view.php">
                                         <svg class="user_pages_image" width="25px" height="25px" viewBox="0 0 409.165 409.164">
                                             <path d="M204.583,216.671c50.664,0,91.74-48.075,91.74-107.378c0-82.237-41.074-107.377-91.74-107.377
                                             c-50.668,0-91.74,25.14-91.74,107.377C112.844,168.596,153.916,216.671,204.583,216.671z"/>
@@ -166,7 +166,7 @@ $searchValue = $_GET['search'] ?? '';
                                     </svg>
                                 </div>
                                 <div class="search_bar">
-                                    <form action="<?php echo isset($_GET['id']) ? '/category.php' : '/search.php'; ?>" method="get" class="search">
+                                    <form action="<?php echo isset($_GET['id']) ? '/category.php' : '/search-view.php'; ?>" method="get" class="search">
                                         <?php if (isset($_GET['id'])): ?>
                                         <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
                                         <?php endif; ?>

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 $user = authorizedUserData();
 denyNoUser();
 ?>
@@ -20,7 +20,7 @@ denyNoUser();
 <main class="content">
     <div class="con">
         <div class="main_dir">
-            <form class="sign_up" action="/vendor/newpass" method="post" novalidate>
+            <form class="sign_up" action="/control/newpass" method="post" novalidate>
                 <h1>Изменение пароля</h1>
                 <?php if (checkAlert('error')): ?>
                     <a class="alert_con"><?php echo getAlert('error'); ?></a>

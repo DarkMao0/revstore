@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 
 // Проверка авторизации
 $user = authorizedUserData();
 if (!$user) {
-    redirect('/signin.php');
+    redirect('/signin-view.php');
 }
 
 // Валидация параметров
@@ -13,7 +13,7 @@ $product_id = filter_input(INPUT_GET, 'product_id', FILTER_VALIDATE_INT);
 
 if (!$review_id || !$product_id) {
     setAlert('review_message', 'Ошибка: Неверные параметры.');
-    redirect("/product.php?id=$product_id");
+    redirect("/product-view.php?id=$product_id");
 }
 
 // Проверка существования отзыва и принадлежности пользователю
@@ -24,7 +24,7 @@ $review = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$review || $review['user_id'] != $user['id']) {
     setAlert('review_message', 'Ошибка: Отзыв не найден или вы не можете его редактировать.');
-    redirect("/product.php?id=$product_id");
+    redirect("/product-view.php?id=$product_id");
 }
 
 // Получение информации о товаре
@@ -95,7 +95,7 @@ $currentRank = $rankMap[$review['rating']] ?? 'D';
                     <?php if (checkAlert('review_message')): ?>
                         <div class="error_message"><?php echo getAlert('review_message'); ?></div>
                     <?php endif; ?>
-                    <form action="/vendor/review" method="post">
+                    <form action="/control/review" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="review_id" value="<?php echo $review_id; ?>">
                         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
@@ -116,6 +116,13 @@ $currentRank = $rankMap[$review['rating']] ?? 'D';
                             <textarea name="comment" id="comment"><?php echo htmlspecialchars($review['comment']); ?></textarea>
                             <?php if (checkError('comment')): ?>
                                 <div class="error_message"><?php echo errorMessage('comment'); ?></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="form_group">
+                            <label for="images">Изображения (до 3 файлов):</label>
+                            <input type="file" name="images[]" id="images" accept="image/*" multiple>
+                            <?php if (checkError('images')): ?>
+                                <div class="error_message"><?php echo errorMessage('images'); ?></div>
                             <?php endif; ?>
                         </div>
                         <button type="submit" class="review_submit">Сохранить изменения</button>

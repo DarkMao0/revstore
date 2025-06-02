@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 $user = authorizedUserData();
 denyNoUser();
 ?>
@@ -32,7 +32,7 @@ denyNoUser();
                         ?>!
                     </h2>
                     <div class="user_actions">
-                        <form action="/vendor/logout" method="post">
+                        <form action="/control/logout" method="post">
                             <button class="exit_but">Выйти из профиля</button>
                         </form>
                         <a href="/user/edit.php" class="prof_edit" title="Редактировать профиль">

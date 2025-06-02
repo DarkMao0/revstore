@@ -63,7 +63,7 @@ input:-webkit-autofill {
 }
 
 .content {
-    margin-top: 170px; /* Высота шапки: ~83px (top_row) + ~72px (bottom_row) + 15px запас */
+    margin-top: 25px; /* Высота шапки: ~83px (top_row) + ~72px (bottom_row) + 15px запас */
     display: flex;
     flex-direction: column;
     padding: 0 20px;
@@ -806,7 +806,7 @@ button.wishlist {
 /* Малые планшеты и ноутбуки (900px–1024px) */
 @media (width <= 1024px) {
     .content {
-        margin-top: 130px; /* Уменьшаем отступ, так как шапка становится компактнее */
+        margin-top: 20px; /* Уменьшаем отступ, так как шапка становится компактнее */
     }
 
     .header {
@@ -965,7 +965,7 @@ button.wishlist {
 /* Малые планшеты (600px–899px) */
 @media (width <= 899px) {
     .content {
-        margin-top: 120px; /* Высота шапки: ~63px (top_row) + ~44px (bottom_row) + 13px запас */
+        margin-top: 15px; /* Высота шапки: ~63px (top_row) + ~44px (bottom_row) + 13px запас */
         padding: 0 10px;
     }
 
@@ -1067,7 +1067,7 @@ button.wishlist {
 /* Мобильные (<600px) */
 @media (width <= 599px) {
     .content {
-        margin-top: 115px; /* Высота шапки: ~63px (top_row) + ~44px (bottom_row) + 8px запас */
+        margin-top: 10px; /* Высота шапки: ~63px (top_row) + ~44px (bottom_row) + 8px запас */
         padding: 0 8px;
     }
 
@@ -1263,7 +1263,7 @@ button.wishlist {
     }
 }
 
-/* Новые медиа-запросы */
+/* Expiriment */
 
 /* Десктоп (≥1025px) */
 @media (min-width: 1025px) {

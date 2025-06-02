@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 
 // Логирование для отладки
 error_log("add-review-view - Метод запроса: " . $_SERVER['REQUEST_METHOD']);
@@ -14,7 +14,7 @@ $user = authorizedUserData();
 if (!$user) {
     error_log("add-review-view - Пользователь не авторизован");
     setAlert('review_message', 'Пожалуйста, войдите в аккаунт, чтобы оставить отзыв');
-    header("Location: /signin.php");
+    header("Location: /signin-view.php");
     exit;
 }
 
@@ -43,15 +43,25 @@ if (!$product) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rating = isset($_POST['rating']) ? (int)$_POST['rating'] : null;
     $comment = $_POST['comment'] ?? null;
+    $images = $_FILES['images'] ?? [];
 
     error_log("add-review-view - Данные формы: рейтинг=$rating, комментарий=" . substr($comment, 0, 50));
+    error_log("add-review-view - Загруженные файлы: " . var_export($images, true));
 
-    $response = addReview($product_id, $rating, $comment, $user);
+    // Проверка количества изображений
+    if (!empty($images['tmp_name']) && count(array_filter($images['tmp_name'])) > 3) {
+        error_log("add-review-view - Слишком много изображений: " . count(array_filter($images['tmp_name'])));
+        setAlert('review_message', 'Ошибка: Можно загрузить не более 3 изображений');
+        header("Location: /add-review-view.php?product_id=$product_id");
+        exit;
+    }
+
+    $response = addReview($product_id, $rating, $comment, $user, $images);
     setAlert('review_message', $response['message']);
     error_log("add-review-view - Ответ отзыва: " . var_export($response, true));
 
     // Прямой редирект на страницу товара
-    $redirectUrl = "/product.php?id=" . $product_id;
+    $redirectUrl = "/product-view.php?id=" . $product_id;
     error_log("add-review-view - Перенаправление на: $redirectUrl");
     header("Location: $redirectUrl");
     exit;
@@ -99,6 +109,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             opacity: 1;
             transform: translateY(0);
         }
+        .form_group.images {
+            margin-top: 15px;
+        }
+        .images-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .images-input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -108,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="main_dir">
             <h1>Добавить отзыв для "<?php echo htmlspecialchars($product['name']); ?>"</h1>
             <div class="review_form">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="form_group">
                         <label for="rating">Рейтинг:</label>
                         <input type="hidden" id="rating" name="rating">
@@ -124,6 +147,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form_group">
                         <label for="comment">Комментарий:</label>
                         <textarea id="comment" name="comment" required maxlength="250"></textarea>
+                    </div>
+                    <div class="form_group images">
+                        <label class="images-label" for="images">Прикрепить изображения (до 3, JPEG/PNG):</label>
+                        <input type="file" id="images" name="images[]" accept="image/jpeg,image/png" multiple>
+                        <small>Максимум 3 изображения, каждый до 5MB.</small>
                     </div>
                     <button type="submit" class="review_submit">Отправить отзыв</button>
                 </form>

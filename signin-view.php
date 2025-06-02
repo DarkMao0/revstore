@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/vendor/functions.php';
+require_once __DIR__ . '/control/functions.php';
 denyUser();
 ?>
 
@@ -20,7 +20,7 @@ denyUser();
 		<div class="con">
 			<div class="main_dir">
 				<div class="form_con">
-					<form class="sign_up" action="/vendor/signin" method="post" novalidate>
+					<form class="sign_up" action="/control/signin" method="post" novalidate>
 						<h1>Вход</h1>
 						<?php if (checkAlert('error')): ?>
         					<a class="alert_con"><?php echo getAlert('error'); ?></a>
@@ -52,7 +52,7 @@ denyUser();
        						<?php endif; ?>
 						</div>
 						<button class="sup_but" type="submit">Войти</button>
-                        <a class="link_to" href="/signup.php">Зарегистрироваться</a>
+                        <a class="link_to" href="/signup-view.php">Зарегистрироваться</a>
 					</form>
 				</div>
 			</div>

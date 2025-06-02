@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 $user = authorizedUserData();
 denyNoUser();
 ?>
@@ -22,7 +22,7 @@ denyNoUser();
     <div class="con">
         <div class="main_dir">
             <div class="form_con">
-                <form class="sign_up" action="/vendor/update" method="post" enctype="multipart/form-data" novalidate>
+                <form class="sign_up" action="/control/update" method="post" enctype="multipart/form-data" novalidate>
                     <h1>Редактирование профиля</h1>
                     <div class="avatar">
                         <div class="img_container">

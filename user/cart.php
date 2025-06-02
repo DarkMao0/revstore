@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/functions.php';
+require_once __DIR__ . '/../control/functions.php';
 denyNoUser();
 
 $pdo = getPDO();
@@ -54,14 +54,14 @@ $total = 0;
                     <?php $total += $data['price'] * $data['quantity']; ?>
                         <tr>
                             <td data-label="Изображение">
-                                <a href="/product.php?id=<?php echo $data['id'] ?>">
+                                <a href="/product-view.php?id=<?php echo $data['id'] ?>">
                                     <img class="cart_image" src="<?php echo $data['image']; ?>">
                                 </a>
                             </td>
                             <td data-label="Название"><?php echo $data['name']; ?></td>
                             <td data-label="Цена за единицу"><?php echo $data['price']; ?> ₽</td>
                             <td data-label="Количество">
-                                <form class="refresh" action="/vendor/refreshquantity" method="post">
+                                <form class="refresh" action="/control/refreshquantity" method="post">
                                     <input type="hidden" name="productID" value="<?php echo $data['id']; ?>">
                                     <div class="quantity_changer">
                                         <button type="button"> - </button>
@@ -80,7 +80,7 @@ $total = 0;
                             </td>
                             <td data-label="Общая стоимость"><?php echo $data['price'] * $data['quantity']; ?> ₽</td>
                             <td data-label="Удалить">
-                                <form action="/vendor/deletefromcart" method="post">
+                                <form action="/control/deletefromcart" method="post">
                                     <input type="hidden" name="productID" value="<?php echo $data['id']; ?>">
                                     <button type="submit" class="cart_del" name="remove">Удалить</button>
                                 </form>

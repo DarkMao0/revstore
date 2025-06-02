@@ -173,6 +173,55 @@
 .review_submit:active {
     filter: brightness(120%);
 }
+
+.review-images {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.review-image {
+    width: 100px; 
+    height: auto;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+.no-images {
+    color: #666;
+    font-style: italic;
+}
+/* Модальное окно (если нужно добавить) */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90%;
+    max-height: 90%;
+}
+.modal img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+}
 @media (width <= 1024px) {
     .average-rating {
         min-height: 35px;

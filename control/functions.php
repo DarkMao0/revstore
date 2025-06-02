@@ -72,6 +72,73 @@ function uploadFile(array $file, string $prefix = ''): ?string
     return "/uploads/avatar/$avatarName";
 }
 
+// Новая функция для загрузки изображений отзыва
+function uploadReviewImages(array $files, int $review_id): array
+{
+    $uploadedPaths = [];
+
+    if (empty($files['tmp_name'])) {
+        return $uploadedPaths;
+    }
+
+    $uploadDir = __DIR__ . '/../uploads/reviews';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    // Ограничение на типы файлов (только изображения)
+    $allowedTypes = ['image/jpeg', 'image/png'];
+    $maxFileSize = 5 * 1024 * 1024; // 5MB
+
+    foreach ($files['tmp_name'] as $index => $tmpName) {
+        if (empty($tmpName)) {
+            continue; // Пропускаем пустые файлы
+        }
+
+        $fileName = $files['name'][$index];
+        $fileType = $files['type'][$index];
+        $fileSize = $files['size'][$index];
+        $fileError = $files['error'][$index];
+
+        // Проверка ошибок загрузки
+        if ($fileError !== UPLOAD_ERR_OK) {
+            error_log("uploadReviewImages - File upload error for file $fileName: Error code $fileError");
+            continue;
+        }
+
+        // Проверка типа файла
+        if (!in_array($fileType, $allowedTypes)) {
+            error_log("uploadReviewImages - Invalid file type for file $fileName: $fileType");
+            continue;
+        }
+
+        // Проверка размера файла
+        if ($fileSize > $maxFileSize) {
+            error_log("uploadReviewImages - File too large for file $fileName: $fileSize bytes");
+            continue;
+        }
+
+        // Генерация уникального имени файла
+        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+        $newFileName = "review_{$review_id}_" . time() . "_$index.$ext";
+        $destination = "$uploadDir/$newFileName";
+
+        if (move_uploaded_file($tmpName, $destination)) {
+            $relativePath = "/uploads/reviews/$newFileName";
+            $uploadedPaths[] = $relativePath;
+
+            // Сохранение пути в таблицу review_images
+            $pdo = getPDO();
+            $stmt = $pdo->prepare("INSERT INTO review_images (review_id, image_path) VALUES (:review_id, :image_path)");
+            $stmt->execute(['review_id' => $review_id, 'image_path' => $relativePath]);
+        } else {
+            error_log("uploadReviewImages - Failed to move uploaded file $fileName to $destination");
+        }
+    }
+
+    return $uploadedPaths;
+}
+
 function setAlert(string $key, string $message): void
 {
     $_SESSION['message'][$key] = $message;
@@ -241,7 +308,7 @@ function checkWishlist(int $product_id): bool
 }
 
 // Функция для добавления отзыва
-function addReview(int $product_id, int $rating, string $comment, array $user): array
+function addReview(int $product_id, ?int $rating, ?string $comment, array $user, array $images = []): array
 {
     $response = ['success' => false, 'message' => ''];
 
@@ -252,7 +319,7 @@ function addReview(int $product_id, int $rating, string $comment, array $user): 
     }
 
     // Валидация rating
-    if ($rating < 1 || $rating > 5) {
+    if ($rating === null || $rating < 1 || $rating > 5) {
         $response['message'] = 'Рейтинг должен быть от 1 до 5';
         return $response;
     }
@@ -299,8 +366,21 @@ function addReview(int $product_id, int $rating, string $comment, array $user): 
     $stmt = $pdo->prepare($query);
     try {
         if ($stmt->execute($params)) {
-            $response['success'] = true;
-            $response['message'] = 'Отзыв успешно добавлен';
+            $review_id = $pdo->lastInsertId();
+
+            // Загрузка изображений
+            if (!empty($images['tmp_name'])) {
+                $uploadedImages = uploadReviewImages($images, $review_id);
+                if (empty($uploadedImages) && count(array_filter($images['tmp_name'])) > 0) {
+                    $response['message'] = 'Отзыв добавлен, но не удалось загрузить изображения';
+                } else {
+                    $response['success'] = true;
+                    $response['message'] = 'Отзыв успешно добавлен';
+                }
+            } else {
+                $response['success'] = true;
+                $response['message'] = 'Отзыв успешно добавлен';
+            }
         } else {
             $response['message'] = 'Не удалось добавить отзыв';
         }
@@ -313,7 +393,7 @@ function addReview(int $product_id, int $rating, string $comment, array $user): 
 }
 
 // Функция для редактирования отзыва
-function updateReview(int $review_id, int $rating, string $comment, array $user): array
+function updateReview(int $review_id, int $rating, string $comment, array $user, array $images = []): array
 {
     $response = ['success' => false, 'message' => ''];
 
@@ -335,8 +415,8 @@ function updateReview(int $review_id, int $rating, string $comment, array $user)
         return $response;
     }
 
-    if (strlen($comment) > 1000) {
-        $response['message'] = 'Максимальная длина комментария 1000 символов';
+    if (strlen($comment) > 250) {
+        $response['message'] = 'Максимальная длина комментария 250 символов';
         return $response;
     }
 
@@ -365,17 +445,41 @@ function updateReview(int $review_id, int $rating, string $comment, array $user)
     ];
 
     $stmt = $pdo->prepare($query);
-    try {
-        if ($stmt->execute($params)) {
+try {
+    if ($stmt->execute($params)) {
+        if (!empty($images['tmp_name']) && is_array($images['tmp_name']) && count(array_filter($images['tmp_name'])) > 0) {
+            // 1. Получаем старые изображения
+            $stmtImg = $pdo->prepare("SELECT image_path FROM review_images WHERE review_id = ?");
+            $stmtImg->execute([$review_id]);
+            $oldImages = $stmtImg->fetchAll(PDO::FETCH_COLUMN);
+
+            foreach ($oldImages as $imgPath) {
+                $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imgPath;
+                if (file_exists($fullPath)) {
+                    unlink($fullPath);
+                }
+            }
+            $pdo->prepare("DELETE FROM review_images WHERE review_id = ?")->execute([$review_id]);
+
+            $uploadedImages = uploadReviewImages($images, $review_id);
+            if (empty($uploadedImages) && count(array_filter($images['tmp_name'])) > 0) {
+                $response['message'] = 'Отзыв обновлён, но не удалось загрузить новые изображения';
+            } else {
+                $response['success'] = true;
+                $response['message'] = 'Отзыв успешно обновлён';
+            }
+        } else {
+            // Если новых изображений нет — старые остаются
             $response['success'] = true;
             $response['message'] = 'Отзыв успешно обновлён';
-        } else {
-            $response['message'] = 'Не удалось обновить отзыв';
         }
-    } catch (\PDOException $e) {
-        error_log("Failed to update review for review_id $review_id: " . $e->getMessage());
-        $response['message'] = 'Ошибка сервера при обновлении отзыва';
+    } else {
+        $response['message'] = 'Не удалось обновить отзыв';
     }
+} catch (\PDOException $e) {
+    error_log("Failed to update review for review_id $review_id: " . $e->getMessage());
+    $response['message'] = 'Ошибка сервера при обновлении отзыва';
+}
 
     return $response;
 }
@@ -407,7 +511,19 @@ function deleteReview(int $review_id, array $user): array
         return $response;
     }
 
-    // Удаление отзыва
+    // Удаляем изображения с диска (если есть)
+    $imgStmt = $pdo->prepare("SELECT image_path FROM review_images WHERE review_id = ?");
+    $imgStmt->execute([$review_id]);
+    $images = $imgStmt->fetchAll(PDO::FETCH_COLUMN);
+
+    foreach ($images as $imgPath) {
+        $fullPath = $_SERVER['DOCUMENT_ROOT'] . $imgPath;
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+        }
+    }
+
+    // Удаление отзыва (изображения из БД удалятся через ON DELETE CASCADE)
     $stmt = $pdo->prepare("DELETE FROM reviews WHERE id = ?");
     try {
         if ($stmt->execute([$review_id])) {
@@ -429,6 +545,7 @@ function getProductUrl(int $product_id): string
 {
     return "/product-view.php?id=" . $product_id;
 }
+
 // Функция для преобразования числового рейтинга в ранг
 function getRankFromRating(float $rating): string
 {

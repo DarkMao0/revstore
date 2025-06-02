@@ -2,7 +2,7 @@
     <?php if (!empty($product['sale'])): ?>
         <a class="sale">-<?php echo htmlspecialchars($product['sale']); ?>%</a>
     <?php endif; ?>
-    <a href="/product.php?id=<?php echo htmlspecialchars($product['product_id']); ?>">
+    <a href="/product-view.php?id=<?php echo htmlspecialchars($product['product_id']); ?>">
         <img class="prod_pic" src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
         <div class="desc">
             <span class="prod_name"><?php echo htmlspecialchars($product['product_name']); ?></span>
@@ -27,7 +27,7 @@
     </a>
     <div class="btns">
         <?php if ($product['available'] > 0): ?>
-            <form action="/vendor/cart" method="post">
+            <form action="/control/cart" method="post">
                 <input type="hidden" name="productID" value="<?php echo htmlspecialchars($product['product_id']); ?>">
                 <input type="hidden" name="action" value="active">
                 <button type="submit" class="cart_but">В корзину</button>
@@ -35,7 +35,7 @@
         <?php else: ?>
             <button type="button" class="cart_but prod_unavailable" disabled>Нет в наличии</button>
         <?php endif; ?>
-        <form action="/vendor/wishlist" method="post">
+        <form action="/control/wishlist" method="post">
             <input type="hidden" name="productID" value="<?php echo htmlspecialchars($product['product_id']); ?>">
             <button type="submit" name="action" value="active" class="fav_but <?php echo checkWishlist($product['product_id']) ? 'wishlist' : ''; ?>">
                 <svg width="30px" height="30px" viewBox="0 0 32 32">
