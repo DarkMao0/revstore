@@ -125,13 +125,13 @@ function authorizedUserData(): array|false
 function logout(): void
 {
     unset($_SESSION['user']['id']);
-    redirect('/signin.php');
+    redirect('/signin-view.php');
 }
 
 function denyNoUser(): void
 {
     if (!isset($_SESSION['user']['id'])) {
-        redirect('/signin.php');
+        redirect('/signin-view.php');
     }
 }
 
@@ -187,7 +187,7 @@ function addToCart(int $product_id): void
     $pdo = getPDO();
     $user_id = $_SESSION['user']['id'] ?? null;
     if ($user_id === null) {
-        redirect('/signin.php');
+        redirect('/signin-view.php');
     }
 
     $stmt = $pdo->prepare("SELECT * FROM cart WHERE userID = :userID AND productID = :productID");
@@ -210,7 +210,7 @@ function addToWishlist(int $product_id): void
     $pdo = getPDO();
     $user_id = $_SESSION['user']['id'] ?? null;
     if ($user_id === null) {
-        redirect('/signin.php');
+        redirect('/signin-view.php');
     }
 
     $stmt = $pdo->prepare("SELECT * FROM wishlist WHERE userID = :userID AND productID = :productID");
@@ -427,7 +427,7 @@ function deleteReview(int $review_id, array $user): array
 // Функция для получения URL страницы товара
 function getProductUrl(int $product_id): string
 {
-    return "/product.php?id=" . $product_id;
+    return "/product-view.php?id=" . $product_id;
 }
 // Функция для преобразования числового рейтинга в ранг
 function getRankFromRating(float $rating): string

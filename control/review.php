@@ -13,7 +13,7 @@ error_log("review - Request URI: " . $_SERVER['REQUEST_URI']);
 $user = authorizedUserData();
 if (!$user) {
     setAlert('review_message', 'Пожалуйста, войдите в аккаунт, чтобы редактировать или удалить отзыв.');
-    header("Location: /signin.php");
+    header("Location: /signin-view.php");
     exit;
 }
 

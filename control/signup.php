@@ -70,13 +70,13 @@ if ($avatar && $avatar['error'] === UPLOAD_ERR_OK) {
 if (!empty($user)) {
     oldValue('name', $name);
     setAlert('error', 'E-mail занят');
-    redirect('/signup.php');
+    redirect('/signup-view.php');
 }
 
 if (!empty($_SESSION['validation'])) {
     oldValue('name', $name);
     oldValue('login', $login);
-    redirect('/signup.php');
+    redirect('/signup-view.php');
 }
 
 $pdo = getPDO();
@@ -101,4 +101,4 @@ catch (\PDOException $e) {
     die();
 }
 
-redirect('/signin.php');
+redirect('/signin-view.php');

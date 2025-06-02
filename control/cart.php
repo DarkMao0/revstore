@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $action = $_POST['action'] ?? '';
 
     if (!isset($_SESSION['user']['id'])) {
-        redirect('/signin.php');
+        redirect('/signin-view.php');
     }
 
     if ($action === 'active') {
