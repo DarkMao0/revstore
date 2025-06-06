@@ -486,8 +486,6 @@
 }
 
 .no_result {
-    position: absolute;
-    left: 45%;
     display: flex;
     align-self: center;
     color: #A0A0A0;

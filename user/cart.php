@@ -3,7 +3,6 @@ require_once __DIR__ . '/../control/functions.php';
 denyNoUser();
 
 $pdo = getPDO();
-
 $user_id = $_SESSION['user']['id'] ?? null;
 
 $stmt = $pdo->prepare("SELECT p.id, p.name, p.price, p.image, c.quantity FROM products p JOIN cart c ON p.id = c.productID WHERE c.userID = :userID");
