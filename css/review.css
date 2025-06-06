@@ -356,3 +356,100 @@
         font-size: 5px;
     }
 }
+/* --- Стилизация блока отзыва --- */
+.review {
+    background: #232325;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,212,255,0.07), 0 1.5px 6px rgba(0,0,0,0.15);
+    margin-bottom: 30px;
+    padding: 20px 24px 16px 24px;
+    transition: box-shadow 0.3s, transform 0.2s;
+    position: relative;
+}
+.review:hover {
+    box-shadow: 0 4px 20px rgba(0,212,255,0.15), 0 3px 12px rgba(0,0,0,0.18);
+    transform: translateY(-2px) scale(1.01);
+}
+.review_header {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    min-height: 32px;
+}
+.review_user {
+    font-weight: bold;
+    color: #00D4FF;
+    font-family: "os_bold", sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.review_date {
+    color: #aaa;
+    font-size: 13px;
+    font-family: "os_medium", sans-serif;
+    margin-left: 0;
+    min-width: 90px;
+    text-align: left;
+    display: inline-block;
+}
+.review_rating {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+.review_comment {
+    font-size: 16px;
+    color: #e0e0e0;
+    margin-bottom: 10px;
+    font-family: "os_medium", sans-serif;
+    line-height: 1.6;
+    word-break: break-word;
+    padding-left: 2px;
+}
+
+.no_reviews {
+    color: #E0E0E0;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.no-images {
+    color: #666;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+@media (max-width: 600px) {
+    .review {
+        padding: 12px 8px 10px 8px;
+        margin-bottom: 18px;
+    }
+    .review_header {
+        gap: 8px;
+    }
+    .review_comment {
+        font-size: 14px;
+    }
+    .review_user {
+        max-width: 100px;
+        font-size: 15px;
+    }
+    .review_date {
+        min-width: 70px;
+        font-size: 11px;
+    }
+    .review_rating {
+        min-width: 80px;
+        gap: 4px;
+    }
+}

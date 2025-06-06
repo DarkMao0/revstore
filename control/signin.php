@@ -36,5 +36,8 @@ elseif (!password_verify($password, $user['password'])) {
     redirect('/signin-view.php');
 }
 
+// Сохраняем id и статус пользователя в сессию
 $_SESSION['user']['id'] = $user['id'];
+$_SESSION['user']['status'] = $user['status'] ?? null;
+
 redirect('/user/profile.php');

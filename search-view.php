@@ -27,20 +27,36 @@ catch (\PDOException $e) {
 
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Получаем product_id для рейтингов
+$product_ids = array_column($results, 'product_id');
+$ratings = [];
+if (!empty($product_ids)) {
+    $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
+    $avgRatingStmt = $pdo->prepare("SELECT product_id, AVG(rating) as average_rating FROM reviews WHERE product_id IN ($placeholders) GROUP BY product_id");
+    try {
+        $avgRatingStmt->execute($product_ids);
+        $ratings_result = $avgRatingStmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($ratings_result as $row) {
+            $ratings[$row['product_id']] = [
+                'average_rating' => round(floatval($row['average_rating']), 1),
+                'average_rank' => getRankFromRating(floatval($row['average_rating']))
+            ];
+        }
+    } catch (\PDOException $e) {
+        error_log("Ошибка рейтинга: " . $e->getMessage());
+    }
+}
+
+// Формируем категории с рейтингами
 foreach ($results as $row) {
     $catId = $row['category_id'];
+    $product_id = $row['product_id'];
     $categories[$catId] = $categories[$catId] ?? ['name' => $row['category_name'], 'products' => []];
-    $categories[$catId]['products'][] = [
-        'product_id' => $row['product_id'],
-        'product_name' => $row['product_name'],
-        'price' => $row['price'],
-        'sale' => $row['sale'],
-        'available' => $row['available'],
-        'image' => $row['image']
-    ];
+    $row['average_rating'] = isset($ratings[$product_id]) ? $ratings[$product_id]['average_rating'] : 0;
+    $row['average_rank'] = isset($ratings[$product_id]) ? $ratings[$product_id]['average_rank'] : null;
+    $categories[$catId]['products'][] = $row;
 }
 ?>
-
 <!DOCTYPE html>
 <html  lang="ru" dir="ltr">
 <head>

@@ -2,23 +2,30 @@
 require_once __DIR__ . '/../control/functions.php';
 $user = authorizedUserData();
 denyNoUser();
-?>
 
+$pdo = getPDO();
+$user_id = $_SESSION['user']['id'] ?? null;
+
+// Получаем все заказы пользователя
+$stmt = $pdo->prepare("SELECT o.id, o.total, o.status, o.created_at FROM orders o WHERE o.user_id = :user_id ORDER BY o.created_at DESC");
+$stmt->execute(['user_id' => $user_id]);
+$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html  lang="ru" dir="ltr">
 <head>
     <meta charset="utf-8">
-	<title>REVSTORE - Профиль</title>
-	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-	<link rel="stylesheet" href="/css/common.css">
-	<link rel="stylesheet" href="/css/user.css">
+    <title>REVSTORE - Профиль</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/user.css">
     <script defer src="/js/scroll.js"></script>
 </head>
 <body>
 <?php include_once __DIR__ . '/../components/header.php' ?>
 <main class="content">
-		<div class="con">
-			<div class="main_dir">
+        <div class="con">
+            <div class="main_dir">
                 <div class="user_profile">
                     <?php if (isset($user['avatar'])): ?>
                         <img class="prof_avatar" src="<?php echo $user['avatar']; ?>">
@@ -51,9 +58,40 @@ denyNoUser();
                         </a>
                     </div>
                 </div>
+                <!-- Блок заказов -->
+                <div class="user_orders">
+                    <h3>Мои заказы</h3>
+                    <?php if (empty($orders)): ?>
+                        <div class="no_result">
+                            <a>У вас пока нет заказов</a>
+                        </div>
+                    <?php else: ?>
+                        <table class="prod">
+                            <tr class="titles">
+                                <td>ID заказа</td>
+                                <td>Дата</td>
+                                <td>Статус</td>
+                                <td>Сумма</td>
+                                <td>Подробнее</td>
+                            </tr>
+                            <?php foreach ($orders as $order): ?>
+                                <tr>
+                                    <td data-label="ID заказа"><?php echo htmlspecialchars($order['id']); ?></td>
+                                    <td data-label="Дата"><?php echo htmlspecialchars($order['created_at']); ?></td>
+                                    <td data-label="Статус"><?php echo htmlspecialchars($order['status']); ?></td>
+                                    <td data-label="Сумма"><?php echo htmlspecialchars($order['total']); ?> ₽</td>
+                                    <td data-label="Подробнее">
+                                        <a href="/user/order_confirmation.php?order_id=<?php echo htmlspecialchars($order['id']); ?>" class="product_interact">Открыть</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    <?php endif; ?>
+                </div>
+                <!-- /Блок заказов -->
             </div>
-		</div>
-	</main>
+        </div>
+    </main>
 <?php include_once __DIR__ . '/../components/footer.php' ?>
 </body>
 </html>

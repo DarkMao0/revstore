@@ -41,7 +41,7 @@ img, svg, button, iframe, .sale {
     user-select: none;
 }
 
-a, label, input, button, span, td {
+a, label, input, button, span, td, p {
     color: #E0E0E0;
     text-decoration: none;
     font-family: "os_medium", sans-serif;

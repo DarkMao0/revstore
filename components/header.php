@@ -257,7 +257,9 @@ $searchValue = $_GET['search'] ?? '';
                                             <a href="?<?php echo $sortQuery; ?>&sort=price_desc"
                                                 <?php echo ($activeSort == 'price_desc' ? " class='active_sort'" : "") ?>>По убыванию цены</a>
                                             <a href="?<?php echo $sortQuery; ?>&sort=sale"
-                                                <?php echo ($activeSort == 'sale' ? " class='last_str active_sort'" : "") ?> class="last_str">Сначала со скидкой</a>
+                                                <?php echo ($activeSort == 'sale' ? " class='active_sort'" : "") ?>>По скидке</a>
+                                            <a href="?<?php echo $sortQuery; ?>&sort=rating"
+                                                <?php echo ($activeSort == 'rating' ? " class='active_sort'" : "") ?>>По самой лучшей оценке</a>
                                         </div>
                                     </div>
                                 <?php endif; ?>

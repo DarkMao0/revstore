@@ -244,6 +244,9 @@ function sortQuery(string &$query, array $getArray): void {
             case 'sale':
                 $query .= " ORDER BY sale DESC, price ASC";
                 break;
+            case 'rating':
+                $query .= " ORDER BY (SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id) IS NULL, (SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id) DESC, price ASC";
+                break;
         }
     }
 }
@@ -257,20 +260,35 @@ function addToCart(int $product_id): void
         redirect('/signin-view.php');
     }
 
+    // Проверка существования и доступности товара
+    $stmt = $pdo->prepare("SELECT available FROM products WHERE id = :productID");
+    $stmt->execute(['productID' => $product_id]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$product || $product['available'] <= 0) {
+        setAlert('error', 'Товар недоступен.');
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    // Проверка, есть ли товар уже в корзине
     $stmt = $pdo->prepare("SELECT * FROM cart WHERE userID = :userID AND productID = :productID");
     $stmt->execute(['userID' => $user_id, 'productID' => $product_id]);
     $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!empty($item)) {
         $newQuantity = $item['quantity'] + 1;
+        if ($newQuantity > $product['available']) {
+            setAlert('error', 'Недостаточно товара на складе.');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
         $stmt = $pdo->prepare("UPDATE cart SET quantity = :quantity WHERE userID = :userID AND productID = :productID");
         $stmt->execute(['quantity' => $newQuantity, 'userID' => $user_id, 'productID' => $product_id]);
-    }
-    else {
+    } else {
         $stmt = $pdo->prepare("INSERT INTO cart (userID, productID, quantity) VALUES (:userID, :productID, 1)");
         $stmt->execute(['userID' => $user_id, 'productID' => $product_id]);
     }
+    setAlert('success', 'Товар добавлен в корзину.');
 }
+
 
 function addToWishlist(int $product_id): void
 {
@@ -330,8 +348,8 @@ function addReview(int $product_id, ?int $rating, ?string $comment, array $user,
         return $response;
     }
 
-    if (strlen($comment) > 250) {
-        $response['message'] = 'Максимальная длина комментария 250 символов';
+    if (strlen($comment) > 750) {
+        $response['message'] = 'Максимальная длина комментария 750 символов';
         return $response;
     }
 
@@ -415,8 +433,8 @@ function updateReview(int $review_id, int $rating, string $comment, array $user,
         return $response;
     }
 
-    if (strlen($comment) > 250) {
-        $response['message'] = 'Максимальная длина комментария 250 символов';
+    if (strlen($comment) > 750) {
+        $response['message'] = 'Максимальная длина комментария 750 символов';
         return $response;
     }
 
