@@ -45,7 +45,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="utf-8">
     <title>Информация о заказе #<?php echo htmlspecialchars($order['id']); ?></title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/cart.css">
+    <link rel="stylesheet" href="/css/order.css">
 </head>
 <body>
 <?php include_once __DIR__ . '/../components/header.php'; ?>

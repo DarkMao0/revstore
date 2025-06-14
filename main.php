@@ -39,36 +39,42 @@ $products_new = $stmt_new->fetchAll(PDO::FETCH_ASSOC);
 $products_sale = $stmt_sale->fetchAll(PDO::FETCH_ASSOC);
 $products_blade = $stmt_blade->fetchAll(PDO::FETCH_ASSOC);
 
-// Получение средних рейтингов для всех товаров одним запросом
-$product_ids = array_merge(
-    array_column($products_random, 'id'),
-    array_column($products_new, 'id'),
-    array_column($products_sale, 'id'),
-    array_column($products_blade, 'id')
-);
-$product_ids = array_unique($product_ids);
+// Новый способ получения средних рейтингов для всех товаров одним запросом
+$all_products = array_merge($products_random, $products_new, $products_sale, $products_blade);
+$product_ids = [];
+foreach ($all_products as $prod) {
+    $product_ids[$prod['id']] = true;
+}
+$product_ids = array_keys($product_ids);
 
 $ratings = [];
 if (!empty($product_ids)) {
     $placeholders = implode(',', array_fill(0, count($product_ids), '?'));
-    $avgRatingStmt = $pdo->prepare("SELECT product_id, AVG(rating) as average_rating FROM reviews WHERE product_id IN ($placeholders) GROUP BY product_id");
+    $sql = "SELECT product_id, AVG(rating) as average_rating 
+            FROM reviews 
+            WHERE product_id IN ($placeholders) 
+            GROUP BY product_id";
+    $avgRatingStmt = $pdo->prepare($sql);
     try {
         $avgRatingStmt->execute($product_ids);
-        $ratings_result = $avgRatingStmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($ratings_result as $row) {
+        while ($row = $avgRatingStmt->fetch(PDO::FETCH_ASSOC)) {
+            $avg = floatval($row['average_rating']);
             $ratings[$row['product_id']] = [
-                'average_rating' => round(floatval($row['average_rating']), 1),
-                'average_rank' => getRankFromRating(floatval($row['average_rating']))
+                'average_rating' => round($avg, 1),
+                'average_rank' => getRankFromRating($avg)
             ];
         }
     } catch (\PDOException $e) {
-        error_log("Я ОПЯТЬ НАСРАЛ " . $e->getMessage());
+        error_log("Ошибка рейтинга: " . $e->getMessage());
     }
 }
+
+// Присваиваем рейтинги товарам
 foreach (['products_random', 'products_new', 'products_sale', 'products_blade'] as $section) {
     foreach ($$section as &$product) {
-        $product['average_rating'] = isset($ratings[$product['id']]) ? $ratings[$product['id']]['average_rating'] : 0;
-        $product['average_rank'] = isset($ratings[$product['id']]) ? $ratings[$product['id']]['average_rank'] : null;
+        $pid = $product['id'];
+        $product['average_rating'] = isset($ratings[$pid]) ? $ratings[$pid]['average_rating'] : 0;
+        $product['average_rank'] = isset($ratings[$pid]) ? $ratings[$pid]['average_rank'] : null;
         $product['product_id'] = $product['id'];
         $product['product_name'] = $product['name'];
     }
@@ -188,10 +194,10 @@ foreach (['products_random', 'products_new', 'products_sale', 'products_blade'] 
                             <img src="<?php echo htmlspecialchars($data_sponsors['image']); ?>">
                         </a>
                     <?php endforeach; ?>
-                    </div>
                 </div>
             </div>
-        </main>
-        <?php include_once __DIR__ . '/components/footer.php' ?>
-    </body>
+        </div>
+    </main>
+    <?php include_once __DIR__ . '/components/footer.php' ?>
+</body>
 </html>

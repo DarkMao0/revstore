@@ -5,6 +5,13 @@
     align-items: center;
     background-color: #2C2C2E;
     color: #E0E0E0;
+    margin-bottom: 32px;
+    border-bottom: 1.5px solid #444;
+    padding-bottom: 22px;
+}
+
+.user_orders {
+    margin-top: 24px;
 }
 
 .prof_avatar {
@@ -61,8 +68,8 @@
     transition: 0.3s all;
 }
 
-
-@media (width <= 1024px) {
+/* Адаптивные стили с использованием max-width */
+@media (max-width: 1024px) {
     .user_profile {
         width: 100%;
         padding: 0 15px;
@@ -73,9 +80,14 @@
     }
 }
 
-@media (width <= 768px) {
+@media (max-width: 768px) {
     .user_profile {
         gap: 15px;
+        margin-bottom: 28px;
+        padding-bottom: 18px;
+    }
+    .user_orders {
+        margin-top: 18px;
     }
     .prof_avatar {
         width: 80px;
@@ -94,7 +106,14 @@
     }
 }
 
-@media (width <= 480px) {
+@media (max-width: 480px) {
+    .user_profile {
+        margin-bottom: 36px;
+        padding-bottom: 22px;
+    }
+    .user_orders {
+        margin-top: 22px;
+    }
     .prof_avatar {
         width: 60px;
         height: 60px;
@@ -112,7 +131,7 @@
     }
 }
 
-@media (width <= 320px) {
+@media (max-width: 320px) {
     .prof_avatar {
         width: 50px;
         height: 50px;

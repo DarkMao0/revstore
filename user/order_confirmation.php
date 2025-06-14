@@ -31,7 +31,7 @@ if (empty($order)) {
     <title>REVSTORE - Подтверждение заказа</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/cart.css">
+    <link rel="stylesheet" href="/css/order.css">
     <script defer src="/js/scroll.js"></script>
 </head>
 <body>

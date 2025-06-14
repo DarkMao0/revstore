@@ -1,0 +1,79 @@
+/* Базовые стили для таблицы */
+.prod {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+    margin-bottom: 20px;
+}
+.prod td, .prod th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.prod tr.titles {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+.prod tr:nth-child(even) {
+    background: #fafafa;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 900px) {
+    .prod, .prod thead, .prod tbody, .prod tr, .prod td, .prod th {
+        display: block;
+        width: 100%;
+    }
+    .prod tr.titles {
+        display: none;
+    }
+    .prod tr {
+        margin-bottom: 18px;
+        border-bottom: 2px solid #eee;
+        background: #fff !important;
+    }
+    .prod td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%;
+        min-height: 40px;
+        box-sizing: border-box;
+    }
+    .prod td:before {
+        position: absolute;
+        top: 8px;
+        left: 12px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #888;
+        content: attr(data-label);
+    }
+}
+
+/* Кнопки и формы */
+.product_interact, .order_but {
+    display: inline-block;
+    padding: 8px 18px;
+    background: #2a7cff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 4px 0;
+    transition: background 0.2s;
+}
+.product_interact:hover, .order_but:hover {
+    background: #195bb5;
+}
+
+/* Для мобильных — кнопки на всю ширину */
+@media (max-width: 600px) {
+    .product_interact, .order_but {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}

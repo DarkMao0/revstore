@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['s
     <title>Cerama Granit - Управление заказами</title>
     <link rel="icon" href="/img/fav.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/order.css">
     <script defer src="../js/common.js"></script>
 </head>
 <body>
@@ -52,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['s
                     </tr>
                     <?php foreach ($orders as $order): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($order['id']); ?></td>
-                            <td><?php echo htmlspecialchars($order['user_name'] ?? 'Неизвестно'); ?></td>
-                            <td><?php echo htmlspecialchars($order['total']); ?> ₽</td>
-                            <td>
+                            <td data-label="ID"><?php echo htmlspecialchars($order['id']); ?></td>
+                            <td data-label="Пользователь"><?php echo htmlspecialchars($order['user_name'] ?? 'Неизвестно'); ?></td>
+                            <td data-label="Сумма"><?php echo htmlspecialchars($order['total']); ?> ₽</td>
+                            <td data-label="Статус">
                                 <form method="post" style="display:inline;">
                                     <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
                                     <select name="status" onchange="this.form.submit()">
@@ -66,9 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['s
                                     </select>
                                 </form>
                             </td>
-                            <td><?php echo htmlspecialchars($order['created_at']); ?></td>
-                            <td><?php echo htmlspecialchars($order['phone']); ?></td>
-                            <td>
+                            <td data-label="Дата"><?php echo htmlspecialchars($order['created_at']); ?></td>
+                            <td data-label="Телефон"><?php echo htmlspecialchars($order['phone']); ?></td>
+                            <td data-label="Действия">
                                 <a href="/admin/order_info.php?order_id=<?php echo $order['id']; ?>" target="_blank">Подробнее</a>
                             </td>
                         </tr>

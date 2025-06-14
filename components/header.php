@@ -198,7 +198,7 @@ $searchValue = $_GET['search'] ?? '';
                                     </form>
                                 </div>
                                 <div class="search_panel">
-                                    <form action="/catalog.php" method="get" class="search">
+                                <form action="<?php echo isset($_GET['id']) ? '/category.php' : '/search-view.php'; ?>" method="get" class="search">
                                         <input
                                             type="text"
                                             class="search_field"

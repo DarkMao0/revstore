@@ -19,6 +19,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/user.css">
+    <link rel="stylesheet" href="/css/order.css">
     <script defer src="/js/scroll.js"></script>
 </head>
 <body>
@@ -81,7 +82,13 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <td data-label="Статус"><?php echo htmlspecialchars($order['status']); ?></td>
                                     <td data-label="Сумма"><?php echo htmlspecialchars($order['total']); ?> ₽</td>
                                     <td data-label="Подробнее">
-                                        <a href="/user/order_confirmation.php?order_id=<?php echo htmlspecialchars($order['id']); ?>" class="product_interact">Открыть</a>
+                                    <a href="/user/order_confirmation.php?order_id=<?php echo htmlspecialchars($order['id']); ?>" class="product_interact">Открыть</a>
+                                    <?php if (in_array($order['status'], ['в_обработке', 'отправлен'])): ?>
+                                        <form action="/user/cancel_order" method="post" style="display:inline;">
+                                            <input type="hidden" name="order_id" value="<?php echo htmlspecialchars($order['id']); ?>">
+                                            <button type="submit" class="product_interact" style="background:#f55;margin-left:8px;" onclick="return confirm('Вы уверены, что хотите отменить заказ?');">Отменить</button>
+                                        </form>
+                                    <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
