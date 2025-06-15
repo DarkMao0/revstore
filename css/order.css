@@ -85,8 +85,12 @@
         text-align: center;
         display: block;
         margin-bottom: 8px;
+        margin-left: 0 !important; /* Убираем отступ на мобильных */
+        width: 100%; /* (по желанию) делаем кнопку на всю ширину */
     }
     .product_interact:last-child, .order_but:last-child {
         margin-bottom: 0;
+        margin-left: 0 !important; /* Убираем отступ на мобильных */
+        width: 100%; /* (по желанию) делаем кнопку на всю ширину */
     }
 }
