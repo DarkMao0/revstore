@@ -198,7 +198,10 @@ $searchValue = $_GET['search'] ?? '';
                                     </form>
                                 </div>
                                 <div class="search_panel">
-                                <form action="<?php echo isset($_GET['id']) ? '/category.php' : '/search-view.php'; ?>" method="get" class="search">
+                                    <form action="<?php echo isset($_GET['id']) ? '/category.php' : '/search-view.php'; ?>" method="get" class="search">
+                                        <?php if (isset($_GET['id'])): ?>
+                                        <input type="hidden" name="id" value="<?php echo $_GET['id']; ?>">
+                                        <?php endif; ?>
                                         <input
                                             type="text"
                                             class="search_field"
