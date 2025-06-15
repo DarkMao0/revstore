@@ -69,11 +69,24 @@
     background: #195bb5;
 }
 
-/* Для мобильных — кнопки на всю ширину */
+/* Красная кнопка отмены */
+.product_interact.cancel, .order_but.cancel {
+    background: #e74c3c;
+}
+.product_interact.cancel:hover, .order_but.cancel:hover {
+    background: #c0392b;
+}
+
+/* Для мобильных — кнопки на всю ширину и друг под другом */
 @media (max-width: 600px) {
     .product_interact, .order_but {
         width: 100%;
         box-sizing: border-box;
         text-align: center;
+        display: block;
+        margin-bottom: 8px;
+    }
+    .product_interact:last-child, .order_but:last-child {
+        margin-bottom: 0;
     }
 }
